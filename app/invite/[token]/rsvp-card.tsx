@@ -3,7 +3,7 @@
 import { useState } from 'react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
-const APP_STORE_URL = 'https://apps.apple.com/app/id6759267210';
+const APP_STORE_URL = 'https://testflight.apple.com/join/Cqdz46jE';
 
 interface RSVPCardProps {
   token: string;
