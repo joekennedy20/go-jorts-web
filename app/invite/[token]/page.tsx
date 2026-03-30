@@ -10,6 +10,7 @@ interface InviteData {
     day: string;
     time: string | null;
     location: string | null;
+    confirmed_names: string[];
   };
 }
 
@@ -84,6 +85,17 @@ export default async function InvitePage({
             <circle cx="12" cy="10" r="3" />
           </svg>
           {invite.plan.location}
+        </p>
+      )}
+
+      {/* Attendance */}
+      {invite.plan.confirmed_names.length > 0 && (
+        <p className="text-white/80 text-base mt-4">
+          {invite.plan.confirmed_names.length === 1
+            ? `${invite.plan.confirmed_names[0]} is in`
+            : invite.plan.confirmed_names.length === 2
+            ? `${invite.plan.confirmed_names[0]} and ${invite.plan.confirmed_names[1]} are in`
+            : `${invite.plan.confirmed_names[0]}, ${invite.plan.confirmed_names[1]}, and ${invite.plan.confirmed_names.length - 2} other${invite.plan.confirmed_names.length - 2 > 1 ? 's' : ''} are in`}
         </p>
       )}
 
