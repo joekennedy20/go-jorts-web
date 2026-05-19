@@ -1,7 +1,7 @@
 import { RSVPCard } from './rsvp-card';
 import { GroupRSVPCard } from './group-rsvp-card';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://jorts-api-944215515278.us-central1.run.app';
 
 interface ResolveResult {
   type: 'contact' | 'group';

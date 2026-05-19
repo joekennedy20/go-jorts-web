@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://jorts-api-944215515278.us-central1.run.app';
 const TESTFLIGHT_URL = 'https://testflight.apple.com/join/Cqdz46jE';
 
 type RSVPStatus = 'in' | 'maybe' | 'no';
