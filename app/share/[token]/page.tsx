@@ -21,6 +21,7 @@ const API_URL =
 interface SharePublicResponse {
   status: 'active' | 'expired' | 'revoked';
   owner_display_name: string;
+  owner_picture_url: string | null;
   current_latitude: number | null;
   current_longitude: number | null;
   last_updated_at: string | null;

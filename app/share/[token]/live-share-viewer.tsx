@@ -20,7 +20,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import {
   APIProvider,
   Map,
-  Marker,
+  AdvancedMarker,
   useMap,
 } from '@vis.gl/react-google-maps';
 
@@ -34,11 +34,21 @@ const POLL_INTERVAL_MS = 5_000;
 interface ShareState {
   status: 'active' | 'expired' | 'revoked';
   owner_display_name: string;
+  owner_picture_url: string | null;
   current_latitude: number | null;
   current_longitude: number | null;
   last_updated_at: string | null;
   expires_at: string;
 }
+
+// Optional Google Maps Map ID — required by AdvancedMarker. Free to
+// create at https://console.cloud.google.com/google/maps-apis/studio/maps
+// then set NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID in Vercel. Without it, the
+// AdvancedMarker renders but a console warning fires; the avatar still
+// shows up on the map regardless.
+const MAP_ID = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID || undefined;
+
+const AVATAR_PIN_SIZE = 56; // px — large enough to read, small enough not to dominate the map
 
 interface Props {
   token: string;
@@ -135,7 +145,59 @@ function RecenteringMap({ share }: { share: ShareState }) {
   }, [map, lat, lng]);
 
   if (lat == null || lng == null) return null;
-  return <Marker position={{ lat, lng }} title={share.owner_display_name} />;
+
+  // Find My / Glympse-style avatar marker: circular photo, navy border,
+  // a small "tail" arrow at the bottom pointing at the actual coord.
+  // If the user has no avatar, fall back to a navy circle with their
+  // first initial.
+  const initial = (share.owner_display_name?.[0] || '?').toUpperCase();
+
+  return (
+    <AdvancedMarker
+      position={{ lat, lng }}
+      title={share.owner_display_name}>
+      <div
+        style={{
+          position: 'relative',
+          width: AVATAR_PIN_SIZE,
+          height: AVATAR_PIN_SIZE,
+          // Translate up so the bottom tail tip sits at the actual
+          // coord, not the avatar's center.
+          transform: `translateY(-${AVATAR_PIN_SIZE / 4}px)`,
+        }}
+      >
+        {/* Circular avatar with navy border */}
+        <div
+          style={{
+            width: '100%',
+            height: '100%',
+            borderRadius: '50%',
+            border: '3px solid #0D1F2D',
+            backgroundColor: '#1B4965',
+            backgroundImage: share.owner_picture_url
+              ? `url("${share.owner_picture_url}")`
+              : undefined,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            boxShadow:
+              '0 2px 8px rgba(0,0,0,0.3), 0 0 0 4px rgba(255,255,255,0.95)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#FFFFFF',
+            fontFamily:
+              '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            fontWeight: 600,
+            fontSize: AVATAR_PIN_SIZE * 0.38,
+          }}
+        >
+          {/* Initial fallback — only renders when no picture URL set,
+              since the background image will cover it otherwise. */}
+          {!share.owner_picture_url && <span>{initial}</span>}
+        </div>
+      </div>
+    </AdvancedMarker>
+  );
 }
 
 // ──────────────────────────────────────────────────────────────────
@@ -202,6 +264,7 @@ export function LiveShareViewer({ token, initial }: Props) {
 
       <APIProvider apiKey={MAPS_KEY}>
         <Map
+          mapId={MAP_ID}
           defaultCenter={defaultCenter}
           defaultZoom={15}
           gestureHandling="greedy"
