@@ -152,10 +152,14 @@ function RecenteringMap({ share }: { share: ShareState }) {
 
   if (lat == null || lng == null) return null;
 
-  // Find My / Glympse-style avatar marker: circular photo, navy border,
-  // a small "tail" arrow at the bottom pointing at the actual coord.
-  // If the user has no avatar, fall back to a navy circle with their
-  // first initial.
+  // Find My / Glympse-style avatar marker: circular photo + small
+  // name pill below it, both centered on the position. The avatar
+  // sits ON the location (its center marks the actual coord) and
+  // the name pill hangs below — same convention iOS Find My uses
+  // for friends-on-the-map.
+  //
+  // If the user has no avatar, fall back to a navy circle with
+  // their first initial.
   const initial = (share.owner_display_name?.[0] || '?').toUpperCase();
 
   return (
@@ -165,18 +169,20 @@ function RecenteringMap({ share }: { share: ShareState }) {
       <div
         style={{
           position: 'relative',
-          width: AVATAR_PIN_SIZE,
-          height: AVATAR_PIN_SIZE,
-          // Translate up so the bottom tail tip sits at the actual
-          // coord, not the avatar's center.
-          transform: `translateY(-${AVATAR_PIN_SIZE / 4}px)`,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          // Don't intercept map drags — pointer-events on the
+          // avatar/name aren't needed for any interaction; the
+          // recipient just looks at the map.
+          pointerEvents: 'none',
         }}
       >
-        {/* Circular avatar with navy border */}
+        {/* Circular avatar with navy border + white halo */}
         <div
           style={{
-            width: '100%',
-            height: '100%',
+            width: AVATAR_PIN_SIZE,
+            height: AVATAR_PIN_SIZE,
             borderRadius: '50%',
             border: '3px solid #0D1F2D',
             backgroundColor: '#1B4965',
@@ -200,6 +206,30 @@ function RecenteringMap({ share }: { share: ShareState }) {
           {/* Initial fallback — only renders when no picture URL set,
               since the background image will cover it otherwise. */}
           {!share.owner_picture_url && <span>{initial}</span>}
+        </div>
+
+        {/* Name pill — small white capsule with navy text. Centered
+            below the avatar with a 6px gap. white-space:nowrap so
+            it stays one line even for longer first names. */}
+        <div
+          style={{
+            marginTop: 6,
+            padding: '2px 9px',
+            borderRadius: 999,
+            backgroundColor: 'rgba(255, 255, 255, 0.97)',
+            color: '#0D1F2D',
+            fontSize: 11,
+            fontWeight: 600,
+            lineHeight: 1.4,
+            fontFamily:
+              '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif',
+            boxShadow: '0 2px 4px rgba(0,0,0,0.18)',
+            whiteSpace: 'nowrap',
+            // Tiny letter-spacing for legibility at small size.
+            letterSpacing: 0.1,
+          }}
+        >
+          {share.owner_display_name}
         </div>
       </div>
     </AdvancedMarker>
