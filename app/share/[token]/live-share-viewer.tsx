@@ -48,7 +48,13 @@ interface ShareState {
 // shows up on the map regardless.
 const MAP_ID = process.env.NEXT_PUBLIC_GOOGLE_MAPS_MAP_ID || undefined;
 
-const AVATAR_PIN_SIZE = 56; // px — large enough to read, small enough not to dominate the map
+// Avatar pin diameter in pixels. 56 felt chunky on the map (Joe's
+// feedback); 40 sits closer to Find My / Glympse proportions and
+// still keeps the face legible at street zoom. Tune here — every
+// downstream measurement (initial-letter font size, white ring,
+// translate-up offset for the bottom-edge anchor) is computed from
+// this single constant.
+const AVATAR_PIN_SIZE = 40;
 
 interface Props {
   token: string;
