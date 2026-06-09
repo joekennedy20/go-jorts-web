@@ -1,79 +1,61 @@
+import type { Metadata } from 'next';
+
 import { RSVPCard } from './rsvp-card';
 import { GroupRSVPCard } from './group-rsvp-card';
+import {
+  resolveToken,
+  getContactInvite,
+  getPlanSummary,
+  formatDay,
+  attendanceText,
+} from './invite-data';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
+const APP_STORE_ID = '6759267210';
 
-interface ResolveResult {
-  type: 'contact' | 'group';
-  token?: string;
-  plan_id?: string;
-  plan?: {
-    name: string;
-    day: string;
-    time: string | null;
-    location: string | null;
-    confirmed_names: string[];
+// Open Graph / Twitter metadata so a texted invite link unfurls into a
+// card with the plan's name, day, and who's in — instead of a bare URL.
+// The og:image is generated per-plan by opengraph-image.tsx alongside.
+// Also includes the Smart App Banner tag so iPhone Safari offers
+// "Open in Jorts" when the app is installed.
+export async function generateMetadata({
+  params,
+}: {
+  params: { token: string };
+}): Promise<Metadata> {
+  const plan = await getPlanSummary(params.token);
+
+  const title = plan
+    ? `${plan.name} — ${formatDay(plan.day)}`
+    : "You're invited — Jorts";
+  const detail = plan
+    ? [plan.time, plan.location].filter(Boolean).join(' · ')
+    : null;
+  const attendance = plan ? attendanceText(plan.confirmed_names) : null;
+  const description =
+    [detail, attendance].filter(Boolean).join(' — ') || 'Tap to RSVP.';
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title,
+      description,
+    },
+    other: {
+      'apple-itunes-app': `app-id=${APP_STORE_ID}, app-argument=${params.token}`,
+    },
   };
-}
-
-interface ContactInviteData {
-  contact_name: string;
-  rsvp_status: string;
-  plan: {
-    name: string;
-    day: string;
-    time: string | null;
-    location: string | null;
-    confirmed_names: string[];
-  };
-}
-
-async function resolveToken(token: string): Promise<ResolveResult | null> {
-  try {
-    const res = await fetch(`${API_URL}/v1/invites/resolve/${token}`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
-    return null;
-  }
-}
-
-async function getContactInvite(token: string): Promise<ContactInviteData | null> {
-  try {
-    const res = await fetch(`${API_URL}/v1/invites/${token}`, {
-      cache: 'no-store',
-    });
-    if (!res.ok) return null;
-    return res.json();
-  } catch {
-    return null;
-  }
-}
-
-function formatDay(dayStr: string): string {
-  try {
-    const [y, m, d] = dayStr.split('-').map(Number);
-    const date = new Date(y, m - 1, d);
-    return date.toLocaleDateString('en-US', {
-      weekday: 'long',
-      month: 'long',
-      day: 'numeric',
-    });
-  } catch {
-    return dayStr;
-  }
 }
 
 function AttendanceLine({ names }: { names: string[] }) {
-  if (names.length === 0) return null;
-  const text =
-    names.length === 1
-      ? `${names[0]} is in`
-      : names.length === 2
-      ? `${names[0]} and ${names[1]} are in`
-      : `${names[0]}, ${names[1]}, and ${names.length - 2} other${names.length - 2 > 1 ? 's' : ''} are in`;
+  const text = attendanceText(names);
+  if (!text) return null;
   return <p className="text-white/80 text-base mt-4">{text}</p>;
 }
 
@@ -115,7 +97,7 @@ export default async function InvitePage({
           This invite link is invalid or expired.
         </p>
         <a
-          href="https://testflight.apple.com/join/Cqdz46jE"
+          href={`https://apps.apple.com/app/id${APP_STORE_ID}`}
           className="mt-8 text-gold font-bold text-base"
         >
           Get Jorts &rarr;
