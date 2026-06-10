@@ -31,9 +31,9 @@ export async function getNightPage(token: string): Promise<NightPage | null> {
   }
 }
 
-/** "Joe's out in Nashville" / "Joe's going to Knicks game" */
+/** "Joe's out in Nashville" / "Joe's at Fenway" */
 export function headlineFor(page: NightPage): string {
-  if (page.event_name) return `${page.first_name}'s going to ${page.event_name}`;
+  if (page.event_name) return `${page.first_name}'s at ${page.event_name}`;
   if (page.city) return `${page.first_name}'s out in ${page.city}`;
   return `${page.first_name}'s out tonight`;
 }
