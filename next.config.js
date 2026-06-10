@@ -25,6 +25,20 @@ const nextConfig = {
           ],
           destination: '/share/:token',
         },
+        // Night pages — `out.jortsapp.com/joe` (the short URL printed
+        // on IG story images) rewrites to the /out/[token] page.
+        // Slugs are 1-24 chars (first names + numeric suffixes), but
+        // legacy random tokens (12 chars urlsafe) match too.
+        {
+          source: '/:token([A-Za-z0-9_-]{1,64})',
+          has: [
+            {
+              type: 'host',
+              value: 'out.jortsapp.com',
+            },
+          ],
+          destination: '/out/:token',
+        },
       ],
     };
   },
