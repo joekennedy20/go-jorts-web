@@ -17,6 +17,7 @@ export function RespondCard({ token, firstName }: RespondCardProps) {
   const [state, setState] = useState<'idle' | 'submitting' | 'done' | 'ended'>(
     'idle',
   );
+  const [sharing, setSharing] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const respond = async (type: ResponseType) => {
@@ -52,6 +53,34 @@ export function RespondCard({ token, firstName }: RespondCardProps) {
     );
   }
 
+  const postMyOwn = async () => {
+    if (sharing) return;
+    setSharing(true);
+    try {
+      const res = await fetch(`${API_URL}/v1/night/${token}/story-image`);
+      if (!res.ok) throw new Error('render failed');
+      const blob = await res.blob();
+      const file = new File([blob], 'jorts-story.png', {type: 'image/png'});
+      // iOS Safari supports sharing files — Instagram appears in the
+      // sheet and takes the image straight to a story. Fallback for
+      // browsers without file-share: open the image so the user can
+      // long-press → save → add to their story manually.
+      const nav = navigator as Navigator & {
+        canShare?: (d: {files: File[]}) => boolean;
+      };
+      if (nav.canShare?.({files: [file]})) {
+        await navigator.share({files: [file]} as ShareData);
+      } else {
+        window.open(URL.createObjectURL(blob), '_blank');
+      }
+    } catch {
+      // User cancelled the share sheet or render failed — both fine,
+      // they can tap again.
+    } finally {
+      setSharing(false);
+    }
+  };
+
   if (state === 'done') {
     return (
       <div className="w-full max-w-sm mt-8 flex flex-col items-center">
@@ -64,11 +93,21 @@ export function RespondCard({ token, firstName }: RespondCardProps) {
           {firstName} will see your message
         </p>
         <p className="text-white/60 text-base mt-3 text-center">
-          Get Jorts to see who else is out tonight
+          you&apos;re out too — tell your people
+        </p>
+        <button
+          onClick={postMyOwn}
+          disabled={sharing}
+          className="mt-6 bg-gold text-navy font-bold rounded-full px-8 py-4 text-center text-lg w-full disabled:opacity-60"
+        >
+          {sharing ? 'getting your story…' : 'post your own story'}
+        </button>
+        <p className="text-white/40 text-xs mt-2 text-center">
+          the same I&apos;M OUT look, ready for your story
         </p>
         <a
           href={APP_STORE_URL}
-          className="mt-6 bg-gold text-navy font-bold rounded-full px-8 py-4 text-center text-lg w-full"
+          className="mt-4 border border-white/25 text-white font-semibold rounded-full px-8 py-3.5 text-center text-base w-full"
         >
           Get Jorts
         </a>
