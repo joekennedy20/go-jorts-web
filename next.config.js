@@ -17,7 +17,10 @@ const nextConfig = {
   // fs reads, so include the font files for that route explicitly.
   experimental: {
     outputFileTracingIncludes: {
-      '/invite/[token]/opengraph-image': ['./app/invite/[token]/fonts/**'],
+      '/invite/[token]/opengraph-image': [
+        './app/invite/[token]/fonts/**',
+        './app/invite/[token]/assets/**',
+      ],
     },
   },
   async rewrites() {
