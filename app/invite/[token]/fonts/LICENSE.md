@@ -4,3 +4,5 @@ Fonts in this directory are licensed under the SIL Open Font License 1.1.
 - DM Serif Display (DMSerifDisplay-*.ttf) — © Colophon Foundry — https://github.com/googlefonts/dm-fonts
 
 Redistributed under OFL-1.1: https://openfontlicense.org
+
+- Poppins (Poppins-Regular.ttf) — © The Poppins Project Authors — https://github.com/itfoundry/Poppins (SIL OFL-1.1)

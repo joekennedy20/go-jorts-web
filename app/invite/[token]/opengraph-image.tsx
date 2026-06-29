@@ -28,6 +28,7 @@ const FONT_DIR = join(process.cwd(), 'app', 'invite', '[token]', 'fonts');
 const ANTON = readFileSync(join(FONT_DIR, 'Anton-Regular.ttf'));
 const SERIF = readFileSync(join(FONT_DIR, 'DMSerifDisplay-Regular.ttf'));
 const SERIF_ITALIC = readFileSync(join(FONT_DIR, 'DMSerifDisplay-Italic.ttf'));
+const SANS = readFileSync(join(FONT_DIR, 'Poppins-Regular.ttf'));
 
 export default async function Image({
   params,
@@ -43,6 +44,7 @@ export default async function Image({
       { name: 'Anton', data: ANTON, weight: 400, style: 'normal' },
       { name: 'Serif', data: SERIF, weight: 400, style: 'normal' },
       { name: 'Serif', data: SERIF_ITALIC, weight: 400, style: 'italic' },
+      { name: 'Sans', data: SANS, weight: 400, style: 'normal' },
     ],
   });
 }
