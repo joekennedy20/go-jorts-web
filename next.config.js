@@ -12,6 +12,14 @@
 // — that way `jortsapp.com/share/foo` and `go-jorts-web.vercel.app/share/foo`
 // continue to work via the literal route on disk.
 const nextConfig = {
+  // The invite OG image reads its display fonts from disk at render
+  // time (Node runtime). Vercel's file tracing doesn't follow runtime
+  // fs reads, so include the font files for that route explicitly.
+  experimental: {
+    outputFileTracingIncludes: {
+      '/invite/[token]/opengraph-image': ['./app/invite/[token]/fonts/**'],
+    },
+  },
   async rewrites() {
     return {
       beforeFiles: [
