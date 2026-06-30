@@ -13,10 +13,11 @@ import {
 const APP_STORE_ID = '6759267210';
 
 // Open Graph / Twitter metadata so a texted invite link unfurls into a
-// card with the plan's name, day, and who's in — instead of a bare URL.
-// The og:image is generated per-plan by opengraph-image.tsx alongside.
-// Also includes the Smart App Banner tag so iPhone Safari offers
-// "Open in Jorts" when the app is installed.
+// compact strip — the plan's name + day as the title, details in the
+// description — instead of a bare URL. No og:image on purpose: the
+// invite *card* (shared as an image) is the visual, so a big link card
+// here would just duplicate it. Also includes the Smart App Banner tag
+// so iPhone Safari offers "Open in Jorts" when the app is installed.
 export async function generateMetadata({
   params,
 }: {
@@ -43,7 +44,7 @@ export async function generateMetadata({
       type: 'website',
     },
     twitter: {
-      card: 'summary_large_image',
+      card: 'summary',
       title,
       description,
     },
