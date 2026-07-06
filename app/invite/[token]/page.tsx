@@ -527,6 +527,97 @@ function HostCard({
   );
 }
 
+// ── Card-hero mode ────────────────────────────────────────────────
+//
+// When the host designed an invite card in the composer, its captured
+// poster IS the page design — show it as the hero and attach a compact
+// RSVP panel beneath it instead of repeating the title/date in text.
+function CardHero({
+  plan,
+  skin,
+  children,
+}: {
+  plan: PlanSummary;
+  skin: Skin;
+  children: React.ReactNode;
+}) {
+  const host = plan.host ?? null;
+  const guests = plan.guests ?? [];
+  const shown = guests.slice(0, 5);
+  const overflow = guests.length - shown.length;
+  const invited = plan.invited_count ?? 0;
+
+  return (
+    <div className="w-full max-w-[400px]">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={plan.card as string}
+        alt={plan.name}
+        className="w-full rounded-3xl border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.55)]"
+      />
+      <div
+        className="relative -mt-5 rounded-3xl border border-white/10 px-5 pb-5 pt-4 shadow-[0_18px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl"
+        style={{
+          backgroundColor: skin.cardBg,
+          ['--accent' as string]: skin.accent,
+          ['--accent-soft' as string]: skin.accentSoft,
+        }}
+      >
+        {host?.name && (
+          <p
+            className="text-center text-[10px] font-bold uppercase tracking-[0.22em]"
+            style={{ color: skin.accent }}
+          >
+            {host.name}&rsquo;s plan
+          </p>
+        )}
+        {children}
+        {(shown.length > 0 || invited > 0) && (
+          <>
+            <div className="mt-5 h-px bg-white/10" />
+            <div className="mt-3 flex items-center">
+              <div className="flex items-center -space-x-2">
+                {shown.map((g, i) => (
+                  <GuestAvatar key={`${g.name}-${i}`} guest={g} size={30} />
+                ))}
+                {overflow > 0 && (
+                  <span className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-full bg-[#3a5262] text-[11px] font-bold text-white ring-2 ring-[#14222b]">
+                    +{overflow}
+                  </span>
+                )}
+              </div>
+              {invited > 0 && (
+                <div className="ml-auto text-right leading-none">
+                  <span className="block text-[22px] font-extrabold text-white">
+                    {invited}
+                  </span>
+                  <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#7f95a3]">
+                    invited
+                  </span>
+                </div>
+              )}
+            </div>
+          </>
+        )}
+        <div className="mt-5 flex items-center border-t border-white/10 pt-4">
+          <span
+            className="text-[17px] font-extrabold tracking-tight"
+            style={{ color: skin.accent }}
+          >
+            jorts
+          </span>
+          <a
+            href={`https://apps.apple.com/app/id${APP_STORE_ID}`}
+            className="ml-auto text-[11px] font-bold text-[#7f95a3]"
+          >
+            Get the app &rarr;
+          </a>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function InvalidInvite() {
   return (
     <Scene skin={DEFAULT_SKIN} day="">
@@ -567,6 +658,23 @@ export default async function InvitePage({
     }
 
     const skin = skinFor(styleOverride ?? invite.plan.style);
+    if (invite.plan.card) {
+      return (
+        <Scene skin={skin} photo={invite.plan.photo} photos={invite.plan.photos} day={invite.plan.day}>
+          <CardHero plan={invite.plan} skin={skin}>
+            <RSVPCard
+              token={params.token}
+              contactName={invite.contact_name}
+              initialStatus={invite.rsvp_status}
+              planName={invite.plan.name}
+              planDay={invite.plan.day}
+              planTime={invite.plan.time}
+              planLocation={invite.plan.location}
+            />
+          </CardHero>
+        </Scene>
+      );
+    }
     return (
       <Scene skin={skin} photo={invite.plan.photo} photos={invite.plan.photos} day={invite.plan.day}>
         <HostCard plan={invite.plan} skin={skin}>
@@ -587,6 +695,21 @@ export default async function InvitePage({
   // Group invite — show name entry + RSVP
   if (resolved.type === 'group' && resolved.plan) {
     const skin = skinFor(styleOverride ?? resolved.plan.style);
+    if (resolved.plan.card) {
+      return (
+        <Scene skin={skin} photo={resolved.plan.photo} photos={resolved.plan.photos} day={resolved.plan.day}>
+          <CardHero plan={resolved.plan} skin={skin}>
+            <GroupRSVPCard
+              token={params.token}
+              planName={resolved.plan.name}
+              planDay={resolved.plan.day}
+              planTime={resolved.plan.time}
+              planLocation={resolved.plan.location}
+            />
+          </CardHero>
+        </Scene>
+      );
+    }
     return (
       <Scene skin={skin} photo={resolved.plan.photo} photos={resolved.plan.photos} day={resolved.plan.day}>
         <HostCard plan={resolved.plan} skin={skin}>
