@@ -7,12 +7,30 @@
 export const API_URL =
   process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
 
+export interface PlanHost {
+  name: string;
+  picture: string | null;
+}
+
+export interface PlanGuest {
+  name: string;
+  picture: string | null;
+}
+
 export interface PlanSummary {
   name: string;
   day: string;
   time: string | null;
   location: string | null;
   confirmed_names: string[];
+  // Host-card redesign fields (backend PR #111) — optional so the
+  // page renders fine against an older API or cached payloads.
+  host?: PlanHost | null;
+  guests?: PlanGuest[];
+  invited_count?: number;
+  // Composer style key ("cocktail", "girldinner", ...) — skins the page
+  // to match the invite card the host designed. Missing/unknown = default.
+  style?: string | null;
 }
 
 export interface ResolveResult {
