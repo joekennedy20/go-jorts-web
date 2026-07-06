@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { AddToCalendar } from './add-to-calendar';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
 const APP_STORE_URL = 'https://testflight.apple.com/join/Cqdz46jE';
@@ -10,6 +11,9 @@ interface RSVPCardProps {
   contactName: string;
   initialStatus: string;
   planName: string;
+  planDay: string;
+  planTime: string | null;
+  planLocation: string | null;
 }
 
 type RSVPStatus = 'in' | 'maybe' | 'no';
@@ -25,6 +29,9 @@ export function RSVPCard({
   contactName,
   initialStatus,
   planName,
+  planDay,
+  planTime,
+  planLocation,
 }: RSVPCardProps) {
   const [state, setState] = useState<'idle' | 'submitting' | 'confirmed'>(
     initialStatus !== 'pending' ? 'confirmed' : 'idle',
@@ -66,6 +73,15 @@ export function RSVPCard({
           {CONFIRM_MSG[confirmedStatus]}
         </p>
         <p className="text-white/60 text-base mt-2 text-center">{planName}</p>
+
+        {confirmedStatus !== 'no' && (
+          <AddToCalendar
+            planName={planName}
+            day={planDay}
+            time={planTime}
+            location={planLocation}
+          />
+        )}
 
         {/* Change answer */}
         <button
