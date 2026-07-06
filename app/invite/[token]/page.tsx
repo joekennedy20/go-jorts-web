@@ -552,8 +552,7 @@ function CardHero({
       {/* One taped-in object: the poster with the RSVP panel frosted
           over its lower portion — compact, so the host's collage owns
           the rest of the screen. */}
-      <div className="relative -rotate-[1.5deg]">
-        <div className="absolute -top-2.5 left-1/2 z-[2] h-5 w-16 -translate-x-1/2 -rotate-3 bg-[#fff8dc]/45 shadow-sm" />
+      <div className="relative">
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={plan.card as string}
