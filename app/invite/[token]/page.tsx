@@ -218,16 +218,40 @@ function GuestAvatar({ guest, size }: { guest: PlanGuest; size: number }) {
 
 function Scene({
   skin,
+  photo,
   children,
 }: {
   skin: Skin;
+  photo?: string | null;
   children: React.ReactNode;
 }) {
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#0a141b]">
-      {/* Themed scene layer — Stage 2 swaps this for the host's own
-          photo collage. */}
-      <div className="absolute inset-0" style={{ background: skin.scene }} />
+      {photo ? (
+        <>
+          {/* The host's own photo, full-bleed. The scrim + skin tint
+              keep the frosted card readable on any shot. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={photo}
+            alt=""
+            className="absolute inset-0 h-full w-full object-cover"
+          />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(180deg, rgba(6,12,17,0.25) 0%, rgba(6,12,17,0.55) 55%, rgba(6,12,17,0.8) 100%)',
+            }}
+          />
+          <div
+            className="absolute inset-0 opacity-40"
+            style={{ background: skin.scene }}
+          />
+        </>
+      ) : (
+        <div className="absolute inset-0" style={{ background: skin.scene }} />
+      )}
       <div className="relative z-10 flex min-h-screen items-center justify-center px-5 py-16">
         {children}
       </div>
@@ -407,7 +431,7 @@ export default async function InvitePage({
 
     const skin = skinFor(styleOverride ?? invite.plan.style);
     return (
-      <Scene skin={skin}>
+      <Scene skin={skin} photo={invite.plan.photo}>
         <HostCard plan={invite.plan} skin={skin}>
           <RSVPCard
             token={params.token}
@@ -427,7 +451,7 @@ export default async function InvitePage({
   if (resolved.type === 'group' && resolved.plan) {
     const skin = skinFor(styleOverride ?? resolved.plan.style);
     return (
-      <Scene skin={skin}>
+      <Scene skin={skin} photo={resolved.plan.photo}>
         <HostCard plan={resolved.plan} skin={skin}>
           <GroupRSVPCard
             token={params.token}
