@@ -13,6 +13,8 @@ interface RSVPCardProps {
   planDay: string;
   planTime: string | null;
   planLocation: string | null;
+  /** Slim variant for the card-hero tab — single-row buttons, no labels. */
+  compact?: boolean;
 }
 
 type RSVPStatus = 'in' | 'maybe' | 'no';
@@ -31,6 +33,7 @@ export function RSVPCard({
   planDay,
   planTime,
   planLocation,
+  compact,
 }: RSVPCardProps) {
   const [state, setState] = useState<'idle' | 'submitting' | 'confirmed'>(
     initialStatus !== 'pending' ? 'confirmed' : 'idle',
@@ -60,7 +63,7 @@ export function RSVPCard({
   // Confirmed state
   if (state === 'confirmed' && confirmedStatus && !showButtons) {
     return (
-      <div className="w-full mt-5 flex flex-col items-center">
+      <div className={compact ? 'w-full flex flex-col items-center' : 'w-full mt-5 flex flex-col items-center'}>
         {/* Checkmark */}
         <div className="w-11 h-11 rounded-full flex items-center justify-center mb-3"
           style={{ backgroundColor: 'var(--accent-soft, rgba(232,160,32,0.2))' }}>
@@ -103,6 +106,37 @@ export function RSVPCard({
   }
 
   // Idle state — show buttons
+  if (compact) {
+    return (
+      <div className="w-full">
+        <p className="text-white/85 text-[12.5px] font-semibold">
+          Hey {contactName.split(' ')[0]} — you in?
+        </p>
+        <div className="mt-2 flex gap-2">
+          <button
+            onClick={() => handleRSVP('in')}
+            className="h-10 flex-[1.4] rounded-lg text-white font-bold text-[13px] active:opacity-80 transition-opacity"
+            style={{ backgroundColor: 'var(--accent, #E8A020)' }}
+          >
+            I'm in
+          </button>
+          <button
+            onClick={() => handleRSVP('maybe')}
+            className="h-10 flex-1 rounded-lg border-[1.5px] font-bold text-[12px] active:opacity-80 transition-opacity"
+            style={{ borderColor: 'var(--accent, #E8A020)', color: 'var(--accent, #E8A020)' }}
+          >
+            Maybe
+          </button>
+          <button
+            onClick={() => handleRSVP('no')}
+            className="h-10 flex-1 rounded-lg border-[1.5px] border-white/15 text-white/60 text-[12px] active:opacity-80 transition-opacity"
+          >
+            Can't
+          </button>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="w-full mt-5">
       <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#7f95a3]">

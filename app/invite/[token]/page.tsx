@@ -560,16 +560,19 @@ function CardHero({
           alt={plan.name}
           className="w-full rounded-2xl border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.6)]"
         />
+        {/* Slim RSVP tab right below the poster — never covers the
+            card's own details, inset narrower so it reads as attached
+            hardware rather than a second card. */}
         <div
-          className="absolute inset-x-2.5 bottom-2.5 z-[1] rounded-xl border border-white/10 px-4 pb-3.5 pt-1 shadow-[0_10px_30px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+          className="relative mx-3 -mt-1 rounded-b-xl rounded-t-md border border-white/10 px-3.5 pb-3 pt-2.5 shadow-[0_14px_36px_rgba(0,0,0,0.5)] backdrop-blur-xl"
           style={{
-            backgroundColor: skin.cardBg.replace('0.8', '0.72'),
+            backgroundColor: skin.cardBg,
             ['--accent' as string]: skin.accent,
             ['--accent-soft' as string]: skin.accentSoft,
           }}
         >
           {children}
-          <div className="mt-3.5 flex items-center border-t border-white/10 pt-3">
+          <div className="mt-3 flex items-center border-t border-white/10 pt-2.5">
             {shown.length > 0 && (
               <div className="flex items-center -space-x-2">
                 {shown.map((g, i) => (
@@ -653,6 +656,7 @@ export default async function InvitePage({
               planDay={invite.plan.day}
               planTime={invite.plan.time}
               planLocation={invite.plan.location}
+              compact
             />
           </CardHero>
         </Scene>
@@ -688,6 +692,7 @@ export default async function InvitePage({
               planDay={resolved.plan.day}
               planTime={resolved.plan.time}
               planLocation={resolved.plan.location}
+              compact
             />
           </CardHero>
         </Scene>
