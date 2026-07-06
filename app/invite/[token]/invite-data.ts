@@ -28,6 +28,9 @@ export interface PlanSummary {
   host?: PlanHost | null;
   guests?: PlanGuest[];
   invited_count?: number;
+  // Composer style key ("cocktail", "girldinner", ...) — skins the page
+  // to match the invite card the host designed. Missing/unknown = default.
+  style?: string | null;
 }
 
 export interface ResolveResult {

@@ -65,6 +65,117 @@ export async function generateMetadata({
 // Stage 1 ships a themed gradient scene; Stage 2 replaces it with
 // the host's own photo collage.
 
+// ── Skins — one per composer style key ───────────────────────────
+//
+// The host picks a card design in the app's composer; the page skins
+// itself to match (scene, card tint, accent, title face). All dark
+// variants so the shared text palette stays white. Unknown/missing
+// style falls back to the default night skin. `?style=` on the URL
+// overrides — handy for previews, harmless in prod (visual only).
+
+interface Skin {
+  scene: string;
+  cardBg: string;
+  accent: string;
+  accentSoft: string;
+  titleFont: string;
+  titleClass?: string;
+}
+
+const SERIF = "Georgia, 'Times New Roman', serif";
+const SCRIPT = "'Snell Roundhand', 'Bradley Hand', 'Segoe Script', cursive";
+const CONDENSED = "'Arial Narrow', 'Helvetica Neue', sans-serif";
+
+const DEFAULT_SKIN: Skin = {
+  scene:
+    'radial-gradient(120% 55% at 50% 0%, rgba(232,160,32,0.16), transparent 55%),' +
+    'radial-gradient(90% 40% at 15% 100%, rgba(26,58,92,0.55), transparent 60%),' +
+    'linear-gradient(180deg, #1b3441 0%, #101d26 55%, #0a141b 100%)',
+  cardBg: 'rgba(20, 34, 43, 0.8)',
+  accent: '#E8A020',
+  accentSoft: 'rgba(232,160,32,0.2)',
+  titleFont: SERIF,
+};
+
+const SKINS: Record<string, Skin> = {
+  cocktail: {
+    scene:
+      'radial-gradient(110% 50% at 50% 0%, rgba(232,160,32,0.22), transparent 55%),' +
+      'radial-gradient(70% 40% at 85% 90%, rgba(120,50,90,0.35), transparent 65%),' +
+      'linear-gradient(180deg, #241521 0%, #150d14 60%, #0c070c 100%)',
+    cardBg: 'rgba(30, 19, 29, 0.8)',
+    accent: '#E8A020',
+    accentSoft: 'rgba(232,160,32,0.2)',
+    titleFont: SERIF,
+    titleClass: 'italic',
+  },
+  poolside: {
+    scene:
+      'radial-gradient(120% 55% at 50% 0%, rgba(80,200,215,0.2), transparent 55%),' +
+      'radial-gradient(80% 45% at 10% 100%, rgba(20,110,130,0.45), transparent 60%),' +
+      'linear-gradient(180deg, #0e3742 0%, #0a2731 55%, #06171e 100%)',
+    cardBg: 'rgba(13, 42, 51, 0.8)',
+    accent: '#4FC9D6',
+    accentSoft: 'rgba(79,201,214,0.2)',
+    titleFont: SERIF,
+  },
+  houseparty: {
+    scene:
+      'radial-gradient(110% 50% at 50% 0%, rgba(255,122,69,0.2), transparent 55%),' +
+      'radial-gradient(70% 45% at 90% 95%, rgba(170,50,120,0.35), transparent 65%),' +
+      'linear-gradient(180deg, #29141f 0%, #180c14 60%, #0e070c 100%)',
+    cardBg: 'rgba(36, 21, 33, 0.8)',
+    accent: '#FF7A45',
+    accentSoft: 'rgba(255,122,69,0.2)',
+    titleFont: CONDENSED,
+    titleClass: 'font-black uppercase tracking-wide',
+  },
+  boatday: {
+    scene:
+      'radial-gradient(120% 55% at 50% 0%, rgba(120,180,235,0.22), transparent 55%),' +
+      'radial-gradient(90% 40% at 15% 100%, rgba(30,80,140,0.5), transparent 60%),' +
+      'linear-gradient(180deg, #143least 0%, #0f2438 55%, #081420 100%)'.replace('#143least', '#1a3a5c'),
+    cardBg: 'rgba(15, 36, 56, 0.8)',
+    accent: '#5AA9E6',
+    accentSoft: 'rgba(90,169,230,0.2)',
+    titleFont: SERIF,
+  },
+  girldinner: {
+    scene:
+      'radial-gradient(110% 50% at 50% 0%, rgba(240,180,140,0.18), transparent 55%),' +
+      'radial-gradient(75% 45% at 85% 95%, rgba(140,60,60,0.35), transparent 65%),' +
+      'linear-gradient(180deg, #2a1417 0%, #1a0d10 60%, #100709 100%)',
+    cardBg: 'rgba(38, 20, 23, 0.8)',
+    accent: '#E8B08A',
+    accentSoft: 'rgba(232,176,138,0.2)',
+    titleFont: SCRIPT,
+  },
+  wewantbeer: {
+    scene:
+      'radial-gradient(110% 50% at 50% 0%, rgba(217,164,65,0.2), transparent 55%),' +
+      'linear-gradient(180deg, #241b10 0%, #17110a 60%, #0d0a06 100%)',
+    cardBg: 'rgba(33, 25, 15, 0.82)',
+    accent: '#D9A441',
+    accentSoft: 'rgba(217,164,65,0.2)',
+    titleFont: CONDENSED,
+    titleClass: 'font-black uppercase tracking-wide',
+  },
+  bookclub: {
+    scene:
+      'radial-gradient(110% 50% at 50% 0%, rgba(201,180,88,0.16), transparent 55%),' +
+      'radial-gradient(80% 45% at 10% 100%, rgba(30,70,45,0.45), transparent 60%),' +
+      'linear-gradient(180deg, #14231a 0%, #0e1912 60%, #080f0b 100%)',
+    cardBg: 'rgba(18, 33, 25, 0.8)',
+    accent: '#C9B458',
+    accentSoft: 'rgba(201,180,88,0.2)',
+    titleFont: SERIF,
+  },
+};
+
+function skinFor(style: string | null | undefined): Skin {
+  return (style && SKINS[style]) || DEFAULT_SKIN;
+}
+
 const INITIAL_COLORS = [
   '#7a5fb0', '#4f8fb0', '#b0645f', '#5fb07a', '#b0975f', '#5f74b0',
 ];
@@ -105,20 +216,18 @@ function GuestAvatar({ guest, size }: { guest: PlanGuest; size: number }) {
   );
 }
 
-function Scene({ children }: { children: React.ReactNode }) {
+function Scene({
+  skin,
+  children,
+}: {
+  skin: Skin;
+  children: React.ReactNode;
+}) {
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#101d26]">
-      {/* Stage-1 scene: layered navy night with an amber glow up top.
-          Stage 2 swaps this layer for the host's photo collage. */}
-      <div
-        className="absolute inset-0"
-        style={{
-          background:
-            'radial-gradient(120% 55% at 50% 0%, rgba(232,160,32,0.16), transparent 55%),' +
-            'radial-gradient(90% 40% at 15% 100%, rgba(26,58,92,0.55), transparent 60%),' +
-            'linear-gradient(180deg, #1b3441 0%, #101d26 55%, #0a141b 100%)',
-        }}
-      />
+    <main className="relative min-h-screen overflow-hidden bg-[#0a141b]">
+      {/* Themed scene layer — Stage 2 swaps this for the host's own
+          photo collage. */}
+      <div className="absolute inset-0" style={{ background: skin.scene }} />
       <div className="relative z-10 flex min-h-screen items-center justify-center px-5 py-16">
         {children}
       </div>
@@ -128,9 +237,11 @@ function Scene({ children }: { children: React.ReactNode }) {
 
 function HostCard({
   plan,
+  skin,
   children,
 }: {
   plan: PlanSummary;
+  skin: Skin;
   children: React.ReactNode;
 }) {
   const host = plan.host ?? null;
@@ -140,7 +251,16 @@ function HostCard({
   const invited = plan.invited_count ?? 0;
 
   return (
-    <div className="relative w-full max-w-[380px] rounded-3xl border border-white/10 bg-[#14222b]/80 shadow-[0_18px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl px-5 pb-5 pt-12">
+    <div
+      className="relative w-full max-w-[380px] rounded-3xl border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.55),0_2px_8px_rgba(0,0,0,0.4)] backdrop-blur-xl px-5 pb-5 pt-12"
+      style={{
+        backgroundColor: skin.cardBg,
+        backgroundImage:
+          'radial-gradient(120% 60% at 50% 0%, rgba(255,255,255,0.06), transparent 60%)',
+        ['--accent' as string]: skin.accent,
+        ['--accent-soft' as string]: skin.accentSoft,
+      }}
+    >
       {/* Host face bridging the card's top edge */}
       <div className="absolute -top-9 left-1/2 -translate-x-1/2">
         {host?.picture ? (
@@ -148,30 +268,34 @@ function HostCard({
           <img
             src={host.picture}
             alt={host.name}
-            className="h-[72px] w-[72px] rounded-full border-[3px] border-gold object-cover shadow-lg"
+            className="h-[72px] w-[72px] rounded-full border-[3px] object-cover shadow-lg"
+            style={{ borderColor: skin.accent }}
           />
         ) : (
           <span
-            className="flex h-[72px] w-[72px] items-center justify-center rounded-full border-[3px] border-gold text-[28px] font-bold text-white shadow-lg"
-            style={{ backgroundColor: initialColor(host?.name ?? 'J') }}
+            className="flex h-[72px] w-[72px] items-center justify-center rounded-full border-[3px] text-[28px] font-bold text-white shadow-lg"
+            style={{ backgroundColor: initialColor(host?.name ?? 'J'), borderColor: skin.accent }}
           >
             {(host?.name ?? '?').charAt(0).toUpperCase()}
           </span>
         )}
       </div>
 
-      <p className="text-center text-[10px] font-bold uppercase tracking-[0.22em] text-gold">
+      <p
+        className="text-center text-[10px] font-bold uppercase tracking-[0.22em]"
+        style={{ color: skin.accent }}
+      >
         {host?.name ? `${host.name}’s plan` : 'You’re invited'}
       </p>
       <h1
-        className="mt-1.5 text-center text-[30px] font-semibold leading-[1.15] text-white"
-        style={{ fontFamily: "Georgia, 'Times New Roman', serif" }}
+        className={`mt-1.5 text-center text-[30px] font-semibold leading-[1.15] text-white ${skin.titleClass ?? ''}`}
+        style={{ fontFamily: skin.titleFont }}
       >
         {plan.name}
       </h1>
 
       <div className="mt-4 flex items-center gap-2.5 text-[13.5px] font-semibold text-[#d7e1e8]">
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ECAB3A" strokeWidth="2" strokeLinecap="round" className="flex-none">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={skin.accent} strokeWidth="2" strokeLinecap="round" className="flex-none">
           <rect x="3" y="4" width="18" height="18" rx="2" />
           <line x1="16" y1="2" x2="16" y2="6" />
           <line x1="8" y1="2" x2="8" y2="6" />
@@ -182,7 +306,7 @@ function HostCard({
       </div>
       {plan.location && (
         <div className="mt-2 flex items-center gap-2.5 text-[13.5px] font-semibold text-[#d7e1e8]">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#ECAB3A" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-none">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={skin.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-none">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
             <circle cx="12" cy="10" r="3" />
           </svg>
@@ -225,7 +349,10 @@ function HostCard({
       )}
 
       <div className="mt-5 flex items-center border-t border-white/10 pt-4">
-        <span className="text-[17px] font-extrabold tracking-tight text-gold">
+        <span
+          className="text-[17px] font-extrabold tracking-tight"
+          style={{ color: skin.accent }}
+        >
           jorts
         </span>
         <a
@@ -241,7 +368,7 @@ function HostCard({
 
 function InvalidInvite() {
   return (
-    <Scene>
+    <Scene skin={DEFAULT_SKIN}>
       <div className="flex flex-col items-center">
         <p className="text-center text-lg text-white/60">
           This invite link is invalid or expired.
@@ -259,14 +386,17 @@ function InvalidInvite() {
 
 export default async function InvitePage({
   params,
+  searchParams,
 }: {
   params: { token: string };
+  searchParams?: { style?: string };
 }) {
   const resolved = await resolveToken(params.token);
 
   if (!resolved) {
     return <InvalidInvite />;
   }
+  const styleOverride = searchParams?.style;
 
   // Contact invite — fetch full invite data with contact name + rsvp status
   if (resolved.type === 'contact') {
@@ -275,9 +405,10 @@ export default async function InvitePage({
       return <InvalidInvite />;
     }
 
+    const skin = skinFor(styleOverride ?? invite.plan.style);
     return (
-      <Scene>
-        <HostCard plan={invite.plan}>
+      <Scene skin={skin}>
+        <HostCard plan={invite.plan} skin={skin}>
           <RSVPCard
             token={params.token}
             contactName={invite.contact_name}
@@ -294,9 +425,10 @@ export default async function InvitePage({
 
   // Group invite — show name entry + RSVP
   if (resolved.type === 'group' && resolved.plan) {
+    const skin = skinFor(styleOverride ?? resolved.plan.style);
     return (
-      <Scene>
-        <HostCard plan={resolved.plan}>
+      <Scene skin={skin}>
+        <HostCard plan={resolved.plan} skin={skin}>
           <GroupRSVPCard
             token={params.token}
             planName={resolved.plan.name}

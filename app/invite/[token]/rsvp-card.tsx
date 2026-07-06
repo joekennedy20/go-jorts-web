@@ -62,8 +62,9 @@ export function RSVPCard({
     return (
       <div className="w-full mt-5 flex flex-col items-center">
         {/* Checkmark */}
-        <div className="w-11 h-11 rounded-full bg-gold/20 flex items-center justify-center mb-3">
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8A020" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <div className="w-11 h-11 rounded-full flex items-center justify-center mb-3"
+          style={{ backgroundColor: 'var(--accent-soft, rgba(232,160,32,0.2))' }}>
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style={{ stroke: 'var(--accent, #E8A020)' }} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
@@ -114,14 +115,16 @@ export function RSVPCard({
       <div className="flex flex-col gap-2.5 mt-3">
         <button
           onClick={() => handleRSVP('in')}
-          className="h-12 rounded-xl bg-gold text-white font-bold text-[15px] active:opacity-80 transition-opacity"
+          className="h-12 rounded-xl text-white font-bold text-[15px] active:opacity-80 transition-opacity"
+          style={{ backgroundColor: 'var(--accent, #E8A020)' }}
         >
           I'm in
         </button>
         <div className="flex gap-2.5">
           <button
             onClick={() => handleRSVP('maybe')}
-            className="h-11 flex-1 rounded-xl border-[1.5px] border-gold/50 text-gold font-bold text-[13.5px] active:opacity-80 transition-opacity"
+            className="h-11 flex-1 rounded-xl border-[1.5px] font-bold text-[13.5px] active:opacity-80 transition-opacity"
+            style={{ borderColor: 'var(--accent, #E8A020)', color: 'var(--accent, #E8A020)' }}
           >
             Maybe
           </button>
