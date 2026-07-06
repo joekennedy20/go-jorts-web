@@ -216,24 +216,104 @@ function GuestAvatar({ guest, size }: { guest: PlanGuest; size: number }) {
   );
 }
 
+// ── Polaroid collage backdrop ─────────────────────────────────────
+//
+// The scrapbook look from the approved mock: the host's photos in
+// white polaroid frames, scattered at fixed tilts around the screen,
+// some peeking out from behind the frosted card. Slots are static
+// (hand-tuned to look right at phone width) and photos fill them
+// round-robin, so 2 photos still dress the whole page. Deliberately
+// no randomness — the page renders identically on every visit.
+
+const COLLAGE_SLOTS: Array<{
+  top?: string;
+  bottom?: string;
+  left?: string;
+  right?: string;
+  width: string;
+  ratio: number;
+  rot: number;
+  tape?: boolean;
+}> = [
+  { top: '2%', left: '-4%', width: 'min(36vw, 230px)', ratio: 1.12, rot: -7 },
+  { top: '1%', right: '-3%', width: 'min(31vw, 200px)', ratio: 1.14, rot: 6, tape: true },
+  { top: '13%', left: '32%', width: 'min(33vw, 215px)', ratio: 0.9, rot: -2 },
+  { bottom: '-3%', left: '-5%', width: 'min(33vw, 215px)', ratio: 1.1, rot: 6, tape: true },
+  { bottom: '-2%', right: '-4%', width: 'min(35vw, 225px)', ratio: 0.92, rot: -5 },
+];
+
+function Collage({ photos }: { photos: string[] }) {
+  return (
+    <div className="absolute inset-0">
+      {COLLAGE_SLOTS.map((slot, i) => {
+        const src = photos[i % photos.length];
+        return (
+          <div
+            key={i}
+            className="absolute rounded-[2px] bg-[#faf7f0] shadow-[0_6px_18px_rgba(0,0,0,0.45)]"
+            style={{
+              top: slot.top,
+              bottom: slot.bottom,
+              left: slot.left,
+              right: slot.right,
+              width: slot.width,
+              padding: '2.2% 2.2% 7%',
+              transform: `rotate(${slot.rot}deg)`,
+            }}
+          >
+            {slot.tape && (
+              <div
+                className="absolute -top-2 left-5 h-4 w-14 -rotate-[38deg] bg-[#fff8dc]/45 shadow-sm"
+              />
+            )}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={src}
+              alt=""
+              className="block w-full object-cover"
+              style={{ aspectRatio: String(1 / slot.ratio) }}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
+
 function Scene({
   skin,
   photo,
+  photos,
   children,
 }: {
   skin: Skin;
   photo?: string | null;
+  photos?: string[];
   children: React.ReactNode;
 }) {
+  const collage = (photos ?? []).slice(0, 4);
   return (
     <main className="relative min-h-screen overflow-hidden bg-[#0a141b]">
-      {photo ? (
+      {collage.length >= 2 ? (
+        <>
+          {/* Solid themed ground under the polaroids */}
+          <div className="absolute inset-0" style={{ background: skin.scene }} />
+          <Collage photos={collage} />
+          <div
+            className="absolute inset-0"
+            style={{
+              background:
+                'linear-gradient(180deg, rgba(6,12,17,0.15) 0%, rgba(6,12,17,0.45) 55%, rgba(6,12,17,0.72) 100%)',
+            }}
+          />
+        </>
+      ) : photo || collage[0] ? (
         <>
           {/* The host's own photo, full-bleed. The scrim + skin tint
               keep the frosted card readable on any shot. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={photo}
+            src={(photo ?? collage[0]) as string}
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
@@ -431,7 +511,7 @@ export default async function InvitePage({
 
     const skin = skinFor(styleOverride ?? invite.plan.style);
     return (
-      <Scene skin={skin} photo={invite.plan.photo}>
+      <Scene skin={skin} photo={invite.plan.photo} photos={invite.plan.photos}>
         <HostCard plan={invite.plan} skin={skin}>
           <RSVPCard
             token={params.token}
@@ -451,7 +531,7 @@ export default async function InvitePage({
   if (resolved.type === 'group' && resolved.plan) {
     const skin = skinFor(styleOverride ?? resolved.plan.style);
     return (
-      <Scene skin={skin} photo={resolved.plan.photo}>
+      <Scene skin={skin} photo={resolved.plan.photo} photos={resolved.plan.photos}>
         <HostCard plan={resolved.plan} skin={skin}>
           <GroupRSVPCard
             token={params.token}
