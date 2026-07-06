@@ -548,15 +548,20 @@ function CardHero({
   const invited = plan.invited_count ?? 0;
 
   return (
-    <div className="w-full max-w-[400px]">
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        src={plan.card as string}
-        alt={plan.name}
-        className="w-full rounded-3xl border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.55)]"
-      />
+    <div className="w-full max-w-[290px]">
+      {/* The poster sits taped into the scrapbook — sized so the
+          host's collage stays visible around it on every side. */}
+      <div className="relative -rotate-[1.5deg]">
+        <div className="absolute -top-2.5 left-1/2 z-[1] h-5 w-16 -translate-x-1/2 -rotate-3 bg-[#fff8dc]/45 shadow-sm" />
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={plan.card as string}
+          alt={plan.name}
+          className="w-full rounded-2xl border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.6)]"
+        />
+      </div>
       <div
-        className="relative -mt-5 rounded-3xl border border-white/10 px-5 pb-5 pt-4 shadow-[0_18px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl"
+        className="relative mt-3 rounded-2xl border border-white/10 px-4 pb-4 pt-3.5 shadow-[0_18px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl"
         style={{
           backgroundColor: skin.cardBg,
           ['--accent' as string]: skin.accent,
