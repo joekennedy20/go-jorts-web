@@ -31,6 +31,9 @@ export interface PlanSummary {
   // Composer style key ("cocktail", "girldinner", ...) — skins the page
   // to match the invite card the host designed. Missing/unknown = default.
   style?: string | null;
+  // The host's invite-card photo (our GCS bucket) — full-bleed page
+  // backdrop when present; themed gradient otherwise.
+  photo?: string | null;
 }
 
 export interface ResolveResult {
