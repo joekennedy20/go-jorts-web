@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { AddToCalendar } from './add-to-calendar';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
-const APP_STORE_URL = 'https://testflight.apple.com/join/Cqdz46jE';
 
 interface RSVPCardProps {
   token: string;
@@ -61,18 +60,17 @@ export function RSVPCard({
   // Confirmed state
   if (state === 'confirmed' && confirmedStatus && !showButtons) {
     return (
-      <div className="w-full mt-6 flex flex-col items-center">
+      <div className="w-full mt-5 flex flex-col items-center">
         {/* Checkmark */}
-        <div className="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center mb-4">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E8A020" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <div className="w-11 h-11 rounded-full bg-gold/20 flex items-center justify-center mb-3">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#E8A020" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
 
-        <p className="text-white font-bold text-[22px] text-center">
+        <p className="text-white font-bold text-[20px] text-center">
           {CONFIRM_MSG[confirmedStatus]}
         </p>
-        <p className="text-white/60 text-base mt-2 text-center">{planName}</p>
 
         {confirmedStatus !== 'no' && (
           <AddToCalendar
@@ -86,21 +84,10 @@ export function RSVPCard({
         {/* Change answer */}
         <button
           onClick={() => setShowButtons(true)}
-          className="mt-4 text-white/40 text-[15px] underline underline-offset-2"
+          className="mt-4 text-white/40 text-[13px] underline underline-offset-2"
         >
           tap to change your answer
         </button>
-
-        {/* App Store CTA */}
-        <div className="mt-12 text-center">
-          <p className="text-[#AAAAAA] text-[13px]">Want the full experience?</p>
-          <a
-            href={APP_STORE_URL}
-            className="text-gold font-bold text-[15px] mt-1.5 inline-block"
-          >
-            Get Jorts &rarr;
-          </a>
-        </div>
       </div>
     );
   }
@@ -116,30 +103,35 @@ export function RSVPCard({
 
   // Idle state — show buttons
   return (
-    <div className="w-full mt-6">
-      <p className="text-white text-lg text-center mb-6">
+    <div className="w-full mt-5">
+      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#7f95a3]">
+        My RSVP
+      </p>
+      <p className="text-white/85 text-[14px] mt-1.5">
         Hey {contactName.split(' ')[0]}, are you in?
       </p>
 
-      <div className="flex flex-col gap-4 mx-8">
+      <div className="flex flex-col gap-2.5 mt-3">
         <button
           onClick={() => handleRSVP('in')}
-          className="h-14 rounded-xl bg-gold text-white font-bold text-[17px] active:opacity-80 transition-opacity"
+          className="h-12 rounded-xl bg-gold text-white font-bold text-[15px] active:opacity-80 transition-opacity"
         >
           I'm in
         </button>
-        <button
-          onClick={() => handleRSVP('maybe')}
-          className="h-14 rounded-xl bg-navy-light text-white font-bold text-[17px] active:opacity-80 transition-opacity"
-        >
-          Maybe
-        </button>
-        <button
-          onClick={() => handleRSVP('no')}
-          className="h-14 rounded-xl bg-white/10 text-white text-[17px] active:opacity-80 transition-opacity"
-        >
-          Can't make it
-        </button>
+        <div className="flex gap-2.5">
+          <button
+            onClick={() => handleRSVP('maybe')}
+            className="h-11 flex-1 rounded-xl border-[1.5px] border-gold/50 text-gold font-bold text-[13.5px] active:opacity-80 transition-opacity"
+          >
+            Maybe
+          </button>
+          <button
+            onClick={() => handleRSVP('no')}
+            className="h-11 flex-1 rounded-xl border-[1.5px] border-white/15 text-white/60 text-[13.5px] active:opacity-80 transition-opacity"
+          >
+            Can't make it
+          </button>
+        </div>
       </div>
     </div>
   );
