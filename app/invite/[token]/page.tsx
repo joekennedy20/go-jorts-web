@@ -548,75 +548,53 @@ function CardHero({
   const invited = plan.invited_count ?? 0;
 
   return (
-    <div className="w-full max-w-[290px]">
-      {/* The poster sits taped into the scrapbook — sized so the
-          host's collage stays visible around it on every side. */}
+    <div className="w-full max-w-[330px]">
+      {/* One taped-in object: the poster with the RSVP panel frosted
+          over its lower portion — compact, so the host's collage owns
+          the rest of the screen. */}
       <div className="relative -rotate-[1.5deg]">
-        <div className="absolute -top-2.5 left-1/2 z-[1] h-5 w-16 -translate-x-1/2 -rotate-3 bg-[#fff8dc]/45 shadow-sm" />
+        <div className="absolute -top-2.5 left-1/2 z-[2] h-5 w-16 -translate-x-1/2 -rotate-3 bg-[#fff8dc]/45 shadow-sm" />
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src={plan.card as string}
           alt={plan.name}
           className="w-full rounded-2xl border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.6)]"
         />
-      </div>
-      <div
-        className="relative mt-3 rounded-2xl border border-white/10 px-4 pb-4 pt-3.5 shadow-[0_18px_50px_rgba(0,0,0,0.5)] backdrop-blur-xl"
-        style={{
-          backgroundColor: skin.cardBg,
-          ['--accent' as string]: skin.accent,
-          ['--accent-soft' as string]: skin.accentSoft,
-        }}
-      >
-        {host?.name && (
-          <p
-            className="text-center text-[10px] font-bold uppercase tracking-[0.22em]"
-            style={{ color: skin.accent }}
-          >
-            {host.name}&rsquo;s plan
-          </p>
-        )}
-        {children}
-        {(shown.length > 0 || invited > 0) && (
-          <>
-            <div className="mt-5 h-px bg-white/10" />
-            <div className="mt-3 flex items-center">
+        <div
+          className="absolute inset-x-2.5 bottom-2.5 z-[1] rounded-xl border border-white/10 px-4 pb-3.5 pt-1 shadow-[0_10px_30px_rgba(0,0,0,0.45)] backdrop-blur-xl"
+          style={{
+            backgroundColor: skin.cardBg.replace('0.8', '0.72'),
+            ['--accent' as string]: skin.accent,
+            ['--accent-soft' as string]: skin.accentSoft,
+          }}
+        >
+          {children}
+          <div className="mt-3.5 flex items-center border-t border-white/10 pt-3">
+            {shown.length > 0 && (
               <div className="flex items-center -space-x-2">
                 {shown.map((g, i) => (
-                  <GuestAvatar key={`${g.name}-${i}`} guest={g} size={30} />
+                  <GuestAvatar key={`${g.name}-${i}`} guest={g} size={26} />
                 ))}
                 {overflow > 0 && (
-                  <span className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-full bg-[#3a5262] text-[11px] font-bold text-white ring-2 ring-[#14222b]">
+                  <span className="flex h-[26px] w-[26px] flex-none items-center justify-center rounded-full bg-[#3a5262] text-[10px] font-bold text-white ring-2 ring-[#14222b]">
                     +{overflow}
                   </span>
                 )}
               </div>
-              {invited > 0 && (
-                <div className="ml-auto text-right leading-none">
-                  <span className="block text-[22px] font-extrabold text-white">
-                    {invited}
-                  </span>
-                  <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#7f95a3]">
-                    invited
-                  </span>
-                </div>
-              )}
-            </div>
-          </>
-        )}
-        <div className="mt-5 flex items-center border-t border-white/10 pt-4">
-          <span
-            className="text-[17px] font-extrabold tracking-tight"
-            style={{ color: skin.accent }}
-          >
-            jorts
-          </span>
-          <a
-            href={`https://apps.apple.com/app/id${APP_STORE_ID}`}
-            className="ml-auto text-[11px] font-bold text-[#7f95a3]"
-          >
-            Get the app &rarr;
-          </a>
+            )}
+            {invited > 0 && (
+              <span className="ml-2 text-[10px] font-bold uppercase tracking-[0.14em] text-[#9fb2c0]">
+                {invited} invited
+              </span>
+            )}
+            <a
+              href={`https://apps.apple.com/app/id${APP_STORE_ID}`}
+              className="ml-auto text-[13px] font-extrabold tracking-tight"
+              style={{ color: skin.accent }}
+            >
+              jorts &rarr;
+            </a>
+          </div>
         </div>
       </div>
     </div>
