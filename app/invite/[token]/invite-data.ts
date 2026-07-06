@@ -34,6 +34,9 @@ export interface PlanSummary {
   // The host's invite-card photo (our GCS bucket) — full-bleed page
   // backdrop when present; themed gradient otherwise.
   photo?: string | null;
+  // Up to 4 photos — rendered as the polaroid-collage backdrop.
+  // Takes precedence over `photo` when it has 2+ entries.
+  photos?: string[];
 }
 
 export interface ResolveResult {
