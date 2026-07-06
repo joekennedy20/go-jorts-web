@@ -37,6 +37,10 @@ export interface PlanSummary {
   // Up to 4 photos — rendered as the polaroid-collage backdrop.
   // Takes precedence over `photo` when it has 2+ entries.
   photos?: string[];
+  // The rendered invite-card poster (the design the host built in the
+  // composer). When present the page shows it as the hero and drops
+  // the redundant text card.
+  card?: string | null;
 }
 
 export interface ResolveResult {
