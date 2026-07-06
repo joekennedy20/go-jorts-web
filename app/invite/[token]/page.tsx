@@ -132,6 +132,9 @@ export default async function InvitePage({
           contactName={invite.contact_name}
           initialStatus={invite.rsvp_status}
           planName={invite.plan.name}
+          planDay={invite.plan.day}
+          planTime={invite.plan.time}
+          planLocation={invite.plan.location}
         />
       </main>
     );
@@ -149,6 +152,9 @@ export default async function InvitePage({
         <GroupRSVPCard
           token={params.token}
           planName={resolved.plan.name}
+          planDay={resolved.plan.day}
+          planTime={resolved.plan.time}
+          planLocation={resolved.plan.location}
         />
       </main>
     );

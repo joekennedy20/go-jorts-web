@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { AddToCalendar } from './add-to-calendar';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
 const TESTFLIGHT_URL = 'https://testflight.apple.com/join/Cqdz46jE';
@@ -16,9 +17,18 @@ const CONFIRM_MSG: Record<RSVPStatus, string> = {
 interface GroupRSVPCardProps {
   token: string;
   planName: string;
+  planDay: string;
+  planTime: string | null;
+  planLocation: string | null;
 }
 
-export function GroupRSVPCard({ token, planName }: GroupRSVPCardProps) {
+export function GroupRSVPCard({
+  token,
+  planName,
+  planDay,
+  planTime,
+  planLocation,
+}: GroupRSVPCardProps) {
   const [step, setStep] = useState<'name' | 'rsvp' | 'submitting' | 'confirmed'>('name');
   const [name, setName] = useState('');
   const [confirmedStatus, setConfirmedStatus] = useState<RSVPStatus | null>(null);
@@ -128,6 +138,14 @@ export function GroupRSVPCard({ token, planName }: GroupRSVPCardProps) {
           {CONFIRM_MSG[confirmedStatus]}
         </p>
         <p className="text-white/60 text-base mt-2 text-center">{planName}</p>
+        {confirmedStatus !== 'no' && (
+          <AddToCalendar
+            planName={planName}
+            day={planDay}
+            time={planTime}
+            location={planLocation}
+          />
+        )}
         <div className="mt-12 text-center">
           <p className="text-[#AAAAAA] text-[13px]">Want the full experience?</p>
           <a
