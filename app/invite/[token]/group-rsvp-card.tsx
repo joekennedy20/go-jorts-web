@@ -19,6 +19,8 @@ interface GroupRSVPCardProps {
   planDay: string;
   planTime: string | null;
   planLocation: string | null;
+  /** Slim variant for the card-hero tab — inline name row, single-row buttons. */
+  compact?: boolean;
 }
 
 export function GroupRSVPCard({
@@ -27,6 +29,7 @@ export function GroupRSVPCard({
   planDay,
   planTime,
   planLocation,
+  compact,
 }: GroupRSVPCardProps) {
   const [step, setStep] = useState<'name' | 'rsvp' | 'submitting' | 'confirmed'>('name');
   const [name, setName] = useState('');
@@ -55,6 +58,30 @@ export function GroupRSVPCard({
   };
 
   // Step 1: Name entry
+  if (step === 'name' && compact) {
+    return (
+      <div className="w-full">
+        <div className="flex gap-2">
+          <input
+            type="text"
+            placeholder="Your name — so the group knows"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="h-10 min-w-0 flex-1 rounded-lg border border-white/15 bg-white/10 px-3 text-[13px] text-white placeholder-white/35 focus:outline-none focus:border-white/40"
+            maxLength={50}
+          />
+          <button
+            onClick={handleContinue}
+            disabled={name.trim().length < 2}
+            className="h-10 flex-none rounded-lg px-4 text-white font-bold text-[13px] disabled:opacity-40 transition-opacity"
+            style={{ backgroundColor: 'var(--accent, #E8A020)' }}
+          >
+            Next
+          </button>
+        </div>
+      </div>
+    );
+  }
   if (step === 'name') {
     return (
       <div className="w-full mt-5">
@@ -85,6 +112,37 @@ export function GroupRSVPCard({
   }
 
   // Step 2: RSVP buttons
+  if (step === 'rsvp' && compact) {
+    return (
+      <div className="w-full">
+        <p className="text-white/85 text-[12.5px] font-semibold">
+          Hey {name.split(' ')[0]} — you in?
+        </p>
+        <div className="mt-2 flex gap-2">
+          <button
+            onClick={() => handleRSVP('in')}
+            className="h-10 flex-[1.4] rounded-lg text-white font-bold text-[13px] active:opacity-80 transition-opacity"
+            style={{ backgroundColor: 'var(--accent, #E8A020)' }}
+          >
+            I&apos;m in
+          </button>
+          <button
+            onClick={() => handleRSVP('maybe')}
+            className="h-10 flex-1 rounded-lg border-[1.5px] font-bold text-[12px] active:opacity-80 transition-opacity"
+            style={{ borderColor: 'var(--accent, #E8A020)', color: 'var(--accent, #E8A020)' }}
+          >
+            Maybe
+          </button>
+          <button
+            onClick={() => handleRSVP('no')}
+            className="h-10 flex-1 rounded-lg border-[1.5px] border-white/15 text-white/60 text-[12px] active:opacity-80 transition-opacity"
+          >
+            Can&apos;t
+          </button>
+        </div>
+      </div>
+    );
+  }
   if (step === 'rsvp') {
     return (
       <div className="w-full mt-5">
@@ -134,7 +192,7 @@ export function GroupRSVPCard({
   // Confirmed
   if (step === 'confirmed' && confirmedStatus) {
     return (
-      <div className="w-full mt-5 flex flex-col items-center">
+      <div className={compact ? 'w-full flex flex-col items-center' : 'w-full mt-5 flex flex-col items-center'}>
         <div className="w-11 h-11 rounded-full flex items-center justify-center mb-3"
           style={{ backgroundColor: 'var(--accent-soft, rgba(232,160,32,0.2))' }}>
           <svg width="22" height="22" viewBox="0 0 24 24" fill="none" style={{ stroke: 'var(--accent, #E8A020)' }} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
