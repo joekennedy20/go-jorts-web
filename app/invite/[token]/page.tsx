@@ -234,48 +234,94 @@ const COLLAGE_SLOTS: Array<{
   ratio: number;
   rot: number;
   tape?: boolean;
+  // 'print' = borderless photo print; default is a polaroid frame
+  kind?: 'print';
+  // gentle idle sway — period (s) and delay (s), staggered per slot
+  sway: [number, number];
+  z: number;
 }> = [
-  { top: '2%', left: '-4%', width: 'min(36vw, 230px)', ratio: 1.12, rot: -7 },
-  { top: '1%', right: '-3%', width: 'min(31vw, 200px)', ratio: 1.14, rot: 6, tape: true },
-  { top: '13%', left: '32%', width: 'min(33vw, 215px)', ratio: 0.9, rot: -2 },
-  { bottom: '-3%', left: '-5%', width: 'min(33vw, 215px)', ratio: 1.1, rot: 6, tape: true },
-  { bottom: '-2%', right: '-4%', width: 'min(35vw, 225px)', ratio: 0.92, rot: -5 },
+  { top: '-2%', left: '-8%', width: 'min(46vw, 300px)', ratio: 1.15, rot: -8, sway: [7, 0], z: 1 },
+  { top: '-3%', right: '-7%', width: 'min(42vw, 270px)', ratio: 1.1, rot: 7, tape: true, sway: [9, 1.2], z: 2 },
+  { top: '10%', left: '26%', width: 'min(40vw, 260px)', ratio: 0.85, rot: -2, kind: 'print', sway: [8, 0.6], z: 0 },
+  { top: '30%', right: '-10%', width: 'min(38vw, 240px)', ratio: 1.2, rot: 10, kind: 'print', sway: [10, 2], z: 0 },
+  { bottom: '-4%', left: '-7%', width: 'min(44vw, 285px)', ratio: 1.05, rot: 6, tape: true, sway: [8.5, 1.6], z: 2 },
+  { bottom: '-3%', right: '-6%', width: 'min(42vw, 275px)', ratio: 0.9, rot: -6, sway: [7.5, 0.9], z: 1 },
 ];
 
-function Collage({ photos }: { photos: string[] }) {
+// Film-grain overlay — SVG turbulence noise, tiled. Kills the "flat
+// digital gradient" read without weighing the page down.
+const GRAIN =
+  "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E\")";
+
+function Collage({ photos, day }: { photos: string[]; day: string }) {
   return (
     <div className="absolute inset-0">
       {COLLAGE_SLOTS.map((slot, i) => {
         const src = photos[i % photos.length];
+        const isPrint = slot.kind === 'print';
         return (
           <div
             key={i}
-            className="absolute rounded-[2px] bg-[#faf7f0] shadow-[0_6px_18px_rgba(0,0,0,0.45)]"
+            className={
+              isPrint
+                ? 'collage-sway absolute rounded-[2px] shadow-[0_10px_28px_rgba(0,0,0,0.55)]'
+                : 'collage-sway absolute rounded-[2px] bg-[#faf7f0] shadow-[0_10px_28px_rgba(0,0,0,0.55)]'
+            }
             style={{
               top: slot.top,
               bottom: slot.bottom,
               left: slot.left,
               right: slot.right,
               width: slot.width,
-              padding: '2.2% 2.2% 7%',
+              zIndex: slot.z,
+              padding: isPrint ? 0 : '2.4% 2.4% 8%',
               transform: `rotate(${slot.rot}deg)`,
+              animationDuration: `${slot.sway[0]}s`,
+              animationDelay: `${slot.sway[1]}s`,
             }}
           >
             {slot.tape && (
-              <div
-                className="absolute -top-2 left-5 h-4 w-14 -rotate-[38deg] bg-[#fff8dc]/45 shadow-sm"
-              />
+              <div className="absolute -top-2 left-5 h-4 w-14 -rotate-[38deg] bg-[#fff8dc]/45 shadow-sm" />
             )}
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={src}
               alt=""
               className="block w-full object-cover"
-              style={{ aspectRatio: String(1 / slot.ratio) }}
+              style={{
+                aspectRatio: String(1 / slot.ratio),
+                // gentle film wash for cohesion across mismatched shots
+                filter: 'saturate(0.92) contrast(1.04) brightness(0.98) sepia(0.08)',
+              }}
             />
           </div>
         );
       })}
+      {/* Handwritten date note — the scrapbook's connective tissue */}
+      <div
+        className="collage-sway absolute bottom-[6%] left-[7%] z-[3] -rotate-[5deg] rounded-[2px] bg-[#f6efdf] px-3.5 py-2 shadow-[0_6px_16px_rgba(0,0,0,0.45)]"
+        style={{
+          fontFamily: "'Snell Roundhand', 'Bradley Hand', 'Segoe Script', cursive",
+          animationDuration: '9s',
+          animationDelay: '0.4s',
+        }}
+      >
+        <span className="text-[15px] font-semibold text-[#5d4a35]">
+          {formatDay(day)} ✦
+        </span>
+      </div>
+      <style>{`
+        @keyframes collage-sway {
+          from { translate: 0 0; }
+          to { translate: 0 7px; }
+        }
+        .collage-sway {
+          animation: collage-sway 8s ease-in-out infinite alternate;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .collage-sway { animation: none; }
+        }
+      `}</style>
     </div>
   );
 }
@@ -284,11 +330,13 @@ function Scene({
   skin,
   photo,
   photos,
+  day,
   children,
 }: {
   skin: Skin;
   photo?: string | null;
   photos?: string[];
+  day: string;
   children: React.ReactNode;
 }) {
   const collage = (photos ?? []).slice(0, 4);
@@ -296,15 +344,24 @@ function Scene({
     <main className="relative min-h-screen overflow-hidden bg-[#0a141b]">
       {collage.length >= 2 ? (
         <>
-          {/* Solid themed ground under the polaroids */}
+          {/* Themed ground with a woven-texture read under the polaroids */}
           <div className="absolute inset-0" style={{ background: skin.scene }} />
-          <Collage photos={collage} />
           <div
-            className="absolute inset-0"
+            className="absolute inset-0 opacity-[0.16] mix-blend-overlay"
+            style={{ backgroundImage: GRAIN }}
+          />
+          <Collage photos={collage} day={day} />
+          <div
+            className="absolute inset-0 z-[4]"
             style={{
               background:
-                'linear-gradient(180deg, rgba(6,12,17,0.15) 0%, rgba(6,12,17,0.45) 55%, rgba(6,12,17,0.72) 100%)',
+                'radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(6,12,17,0.5) 100%),' +
+                'linear-gradient(180deg, rgba(6,12,17,0.12) 0%, rgba(6,12,17,0.38) 55%, rgba(6,12,17,0.66) 100%)',
             }}
+          />
+          <div
+            className="absolute inset-0 z-[4] opacity-[0.1]"
+            style={{ backgroundImage: GRAIN }}
           />
         </>
       ) : photo || collage[0] ? (
@@ -472,7 +529,7 @@ function HostCard({
 
 function InvalidInvite() {
   return (
-    <Scene skin={DEFAULT_SKIN}>
+    <Scene skin={DEFAULT_SKIN} day="">
       <div className="flex flex-col items-center">
         <p className="text-center text-lg text-white/60">
           This invite link is invalid or expired.
@@ -511,7 +568,7 @@ export default async function InvitePage({
 
     const skin = skinFor(styleOverride ?? invite.plan.style);
     return (
-      <Scene skin={skin} photo={invite.plan.photo} photos={invite.plan.photos}>
+      <Scene skin={skin} photo={invite.plan.photo} photos={invite.plan.photos} day={invite.plan.day}>
         <HostCard plan={invite.plan} skin={skin}>
           <RSVPCard
             token={params.token}
@@ -531,7 +588,7 @@ export default async function InvitePage({
   if (resolved.type === 'group' && resolved.plan) {
     const skin = skinFor(styleOverride ?? resolved.plan.style);
     return (
-      <Scene skin={skin} photo={resolved.plan.photo} photos={resolved.plan.photos}>
+      <Scene skin={skin} photo={resolved.plan.photo} photos={resolved.plan.photos} day={resolved.plan.day}>
         <HostCard plan={resolved.plan} skin={skin}>
           <GroupRSVPCard
             token={params.token}
