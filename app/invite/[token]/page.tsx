@@ -170,6 +170,18 @@ const SKINS: Record<string, Skin> = {
     accentSoft: 'rgba(201,180,88,0.2)',
     titleFont: SERIF,
   },
+  // Sunrise-run card (Joe's mock 2026-07-08): pre-dawn navy with a
+  // peach horizon glow, serif headline, peach accent.
+  runclub: {
+    scene:
+      'radial-gradient(120% 45% at 50% 100%, rgba(236,154,118,0.28), transparent 60%),' +
+      'radial-gradient(80% 40% at 80% 85%, rgba(233,185,140,0.14), transparent 65%),' +
+      'linear-gradient(180deg, #0a1220 0%, #0c141f 55%, #131017 100%)',
+    cardBg: 'rgba(13, 19, 30, 0.82)',
+    accent: '#EC9A76',
+    accentSoft: 'rgba(236,154,118,0.2)',
+    titleFont: SERIF,
+  },
 };
 
 function skinFor(style: string | null | undefined): Skin {
