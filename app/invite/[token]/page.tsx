@@ -170,6 +170,19 @@ const SKINS: Record<string, Skin> = {
     accentSoft: 'rgba(201,180,88,0.2)',
     titleFont: SERIF,
   },
+  // Candlelit dinner card (Joe's mock 2026-07-08): near-black warm
+  // brown with a candle glow, script-feel italic title, amber accent.
+  dinnerparty: {
+    scene:
+      'radial-gradient(100% 45% at 50% 100%, rgba(224,149,95,0.24), transparent 60%),' +
+      'radial-gradient(60% 35% at 15% 80%, rgba(140,70,30,0.2), transparent 65%),' +
+      'linear-gradient(180deg, #120b07 0%, #150d08 55%, #0c0704 100%)',
+    cardBg: 'rgba(24, 15, 9, 0.82)',
+    accent: '#E0955F',
+    accentSoft: 'rgba(224,149,95,0.2)',
+    titleFont: SERIF,
+    titleClass: 'italic',
+  },
   // Sunrise-run card (Joe's mock 2026-07-08): pre-dawn navy with a
   // peach horizon glow, serif headline, peach accent.
   runclub: {
