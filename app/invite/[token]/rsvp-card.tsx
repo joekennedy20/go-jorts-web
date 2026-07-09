@@ -72,7 +72,7 @@ export function RSVPCard({
           </svg>
         </div>
 
-        <p className="text-white font-bold text-[20px] text-center">
+        <p className="text-center text-[20px] font-bold" style={{ color: 'var(--ink, #fff)' }}>
           {CONFIRM_MSG[confirmedStatus]}
         </p>
 
@@ -88,7 +88,8 @@ export function RSVPCard({
         {/* Change answer */}
         <button
           onClick={() => setShowButtons(true)}
-          className="mt-4 text-white/40 text-[13px] underline underline-offset-2"
+          className="mt-4 text-[13px] underline underline-offset-2"
+          style={{ color: 'var(--sub, rgba(255,255,255,0.4))' }}
         >
           tap to change your answer
         </button>
@@ -100,7 +101,10 @@ export function RSVPCard({
   if (state === 'submitting') {
     return (
       <div className="w-full mt-10 flex justify-center">
-        <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+        <div
+          className="h-8 w-8 animate-spin rounded-full border-2"
+          style={{ borderColor: 'var(--hair, rgba(255,255,255,0.3))', borderTopColor: 'var(--accent, #E8A020)' }}
+        />
       </div>
     );
   }
@@ -109,14 +113,14 @@ export function RSVPCard({
   if (compact) {
     return (
       <div className="w-full">
-        <p className="text-white/85 text-[12.5px] font-semibold">
+        <p className="text-[12.5px] font-semibold" style={{ color: 'var(--ink, rgba(255,255,255,0.85))' }}>
           Hey {contactName.split(' ')[0]} — you in?
         </p>
         <div className="mt-2 flex gap-2">
           <button
             onClick={() => handleRSVP('in')}
-            className="h-10 flex-[1.4] rounded-lg text-white font-bold text-[13px] active:opacity-80 transition-opacity"
-            style={{ backgroundColor: 'var(--accent, #E8A020)' }}
+            className="h-10 flex-[1.4] rounded-lg font-bold text-[13px] active:opacity-80 transition-opacity"
+            style={{ backgroundColor: 'var(--accent, #E8A020)', color: 'var(--on-accent, #fff)' }}
           >
             I'm in
           </button>
@@ -129,7 +133,8 @@ export function RSVPCard({
           </button>
           <button
             onClick={() => handleRSVP('no')}
-            className="h-10 flex-1 rounded-lg border-[1.5px] border-white/15 text-white/60 text-[12px] active:opacity-80 transition-opacity"
+            className="h-10 flex-1 rounded-lg border-[1.5px] text-[12px] active:opacity-80 transition-opacity"
+            style={{ borderColor: 'var(--ghost, rgba(255,255,255,0.15))', color: 'var(--sub, rgba(255,255,255,0.6))' }}
           >
             Can't
           </button>
@@ -139,18 +144,18 @@ export function RSVPCard({
   }
   return (
     <div className="w-full mt-5">
-      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#7f95a3]">
+      <p className="text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: 'var(--sub, #7f95a3)' }}>
         My RSVP
       </p>
-      <p className="text-white/85 text-[14px] mt-1.5">
+      <p className="mt-1.5 text-[14px]" style={{ color: 'var(--ink, rgba(255,255,255,0.85))' }}>
         Hey {contactName.split(' ')[0]}, are you in?
       </p>
 
       <div className="flex flex-col gap-2.5 mt-3">
         <button
           onClick={() => handleRSVP('in')}
-          className="h-12 rounded-xl text-white font-bold text-[15px] active:opacity-80 transition-opacity"
-          style={{ backgroundColor: 'var(--accent, #E8A020)' }}
+          className="h-12 rounded-xl font-bold text-[15px] shadow-[0_6px_18px_rgba(0,0,0,0.15)] active:opacity-80 transition-opacity"
+          style={{ backgroundColor: 'var(--accent, #E8A020)', color: 'var(--on-accent, #fff)' }}
         >
           I'm in
         </button>
@@ -164,7 +169,8 @@ export function RSVPCard({
           </button>
           <button
             onClick={() => handleRSVP('no')}
-            className="h-11 flex-1 rounded-xl border-[1.5px] border-white/15 text-white/60 text-[13.5px] active:opacity-80 transition-opacity"
+            className="h-11 flex-1 rounded-xl border-[1.5px] text-[13.5px] active:opacity-80 transition-opacity"
+            style={{ borderColor: 'var(--ghost, rgba(255,255,255,0.15))', color: 'var(--sub, rgba(255,255,255,0.6))' }}
           >
             Can't make it
           </button>
