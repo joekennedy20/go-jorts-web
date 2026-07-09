@@ -15,6 +15,8 @@ export interface NightPage {
   started_at: string;
   expires_at: string;
   is_active: boolean;
+  /** Sticker design that shared this page — skins the page to match. */
+  design?: string | null;
   response_count: number;
   responses: { name: string; type: string }[];
 }
