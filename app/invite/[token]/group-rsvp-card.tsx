@@ -67,14 +67,15 @@ export function GroupRSVPCard({
             placeholder="Your name — so the group knows"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="h-10 min-w-0 flex-1 rounded-lg border border-white/15 bg-white/10 px-3 text-[13px] text-white placeholder-white/35 focus:outline-none focus:border-white/40"
+            className="h-10 min-w-0 flex-1 rounded-lg border px-3 text-[13px] placeholder:text-[color:var(--sub,rgba(255,255,255,0.35))] focus:outline-none"
+            style={{ borderColor: 'var(--ghost, rgba(255,255,255,0.15))', color: 'var(--ink, #fff)', backgroundColor: 'var(--field, rgba(255,255,255,0.1))' }}
             maxLength={50}
           />
           <button
             onClick={handleContinue}
             disabled={name.trim().length < 2}
-            className="h-10 flex-none rounded-lg px-4 text-white font-bold text-[13px] disabled:opacity-40 transition-opacity"
-            style={{ backgroundColor: 'var(--accent, #E8A020)' }}
+            className="h-10 flex-none rounded-lg px-4 font-bold text-[13px] disabled:opacity-40 transition-opacity"
+            style={{ backgroundColor: 'var(--accent, #E8A020)', color: 'var(--on-accent, #fff)' }}
           >
             Next
           </button>
@@ -88,7 +89,7 @@ export function GroupRSVPCard({
         <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#7f95a3]">
           My RSVP
         </p>
-        <p className="text-white/85 text-[14px] mt-1.5">
+        <p className="mt-1.5 text-[14px]" style={{ color: 'var(--ink, rgba(255,255,255,0.85))' }}>
           What&apos;s your name? So the group knows who&apos;s in.
         </p>
         <input
@@ -96,14 +97,15 @@ export function GroupRSVPCard({
           placeholder="Your name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-          className="w-full mt-3 rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[15px] text-white placeholder-white/35 focus:outline-none focus:border-white/40"
+          className="w-full mt-3 rounded-xl border px-4 py-3 text-[15px] placeholder:text-[color:var(--sub,rgba(255,255,255,0.35))] focus:outline-none"
+          style={{ borderColor: 'var(--ghost, rgba(255,255,255,0.15))', color: 'var(--ink, #fff)', backgroundColor: 'var(--field, rgba(255,255,255,0.1))' }}
           maxLength={50}
         />
         <button
           onClick={handleContinue}
           disabled={name.trim().length < 2}
-          className="w-full mt-2.5 h-12 rounded-xl text-white font-bold text-[15px] disabled:opacity-40 transition-opacity"
-          style={{ backgroundColor: 'var(--accent, #E8A020)' }}
+          className="w-full mt-2.5 h-12 rounded-xl font-bold text-[15px] disabled:opacity-40 transition-opacity"
+          style={{ backgroundColor: 'var(--accent, #E8A020)', color: 'var(--on-accent, #fff)' }}
         >
           Continue
         </button>
@@ -115,14 +117,14 @@ export function GroupRSVPCard({
   if (step === 'rsvp' && compact) {
     return (
       <div className="w-full">
-        <p className="text-white/85 text-[12.5px] font-semibold">
+        <p className="text-[12.5px] font-semibold" style={{ color: 'var(--ink, rgba(255,255,255,0.85))' }}>
           Hey {name.split(' ')[0]} — you in?
         </p>
         <div className="mt-2 flex gap-2">
           <button
             onClick={() => handleRSVP('in')}
-            className="h-10 flex-[1.4] rounded-lg text-white font-bold text-[13px] active:opacity-80 transition-opacity"
-            style={{ backgroundColor: 'var(--accent, #E8A020)' }}
+            className="h-10 flex-[1.4] rounded-lg font-bold text-[13px] active:opacity-80 transition-opacity"
+            style={{ backgroundColor: 'var(--accent, #E8A020)', color: 'var(--on-accent, #fff)' }}
           >
             I&apos;m in
           </button>
@@ -135,7 +137,7 @@ export function GroupRSVPCard({
           </button>
           <button
             onClick={() => handleRSVP('no')}
-            className="h-10 flex-1 rounded-lg border-[1.5px] border-white/15 text-white/60 text-[12px] active:opacity-80 transition-opacity"
+            className="h-10 flex-1 rounded-lg border-[1.5px] text-[12px] active:opacity-80 transition-opacity" style={{ borderColor: 'var(--ghost, rgba(255,255,255,0.15))', color: 'var(--sub, rgba(255,255,255,0.6))' }}
           >
             Can&apos;t
           </button>
@@ -149,14 +151,14 @@ export function GroupRSVPCard({
         <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#7f95a3]">
           My RSVP
         </p>
-        <p className="text-white/85 text-[14px] mt-1.5">
+        <p className="mt-1.5 text-[14px]" style={{ color: 'var(--ink, rgba(255,255,255,0.85))' }}>
           Hey {name.split(' ')[0]}, are you in?
         </p>
         <div className="flex flex-col gap-2.5 mt-3">
           <button
             onClick={() => handleRSVP('in')}
-            className="h-12 rounded-xl text-white font-bold text-[15px] active:opacity-80 transition-opacity"
-          style={{ backgroundColor: 'var(--accent, #E8A020)' }}
+            className="h-12 rounded-xl font-bold text-[15px] active:opacity-80 transition-opacity"
+          style={{ backgroundColor: 'var(--accent, #E8A020)', color: 'var(--on-accent, #fff)' }}
           >
             I&apos;m in
           </button>
@@ -170,7 +172,7 @@ export function GroupRSVPCard({
             </button>
             <button
               onClick={() => handleRSVP('no')}
-              className="h-11 flex-1 rounded-xl border-[1.5px] border-white/15 text-white/60 text-[13.5px] active:opacity-80 transition-opacity"
+              className="h-11 flex-1 rounded-xl border-[1.5px] text-[13.5px] active:opacity-80 transition-opacity" style={{ borderColor: 'var(--ghost, rgba(255,255,255,0.15))', color: 'var(--sub, rgba(255,255,255,0.6))' }}
             >
               Can&apos;t make it
             </button>
@@ -184,7 +186,7 @@ export function GroupRSVPCard({
   if (step === 'submitting') {
     return (
       <div className="w-full mt-10 flex justify-center">
-        <div className="w-8 h-8 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2" style={{ borderColor: 'var(--hair, rgba(255,255,255,0.3))', borderTopColor: 'var(--accent, #E8A020)' }} />
       </div>
     );
   }
@@ -199,7 +201,7 @@ export function GroupRSVPCard({
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
-        <p className="text-white font-bold text-[20px] text-center">
+        <p className="text-center text-[20px] font-bold" style={{ color: 'var(--ink, #fff)' }}>
           {CONFIRM_MSG[confirmedStatus]}
         </p>
         {confirmedStatus !== 'no' && (
