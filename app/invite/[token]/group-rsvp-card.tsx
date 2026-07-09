@@ -86,7 +86,7 @@ export function GroupRSVPCard({
   if (step === 'name') {
     return (
       <div className="w-full mt-5">
-        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#7f95a3]">
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--sub, #7f95a3)' }}>
           My RSVP
         </p>
         <p className="mt-1.5 text-[14px]" style={{ color: 'var(--ink, rgba(255,255,255,0.85))' }}>
@@ -148,7 +148,7 @@ export function GroupRSVPCard({
   if (step === 'rsvp') {
     return (
       <div className="w-full mt-5">
-        <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#7f95a3]">
+        <p className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--sub, #7f95a3)' }}>
           My RSVP
         </p>
         <p className="mt-1.5 text-[14px]" style={{ color: 'var(--ink, rgba(255,255,255,0.85))' }}>
