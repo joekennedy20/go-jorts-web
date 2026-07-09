@@ -473,12 +473,15 @@ function Scene({
   skin,
   photo,
   photos,
+  card,
   day,
   children,
 }: {
   skin: Skin;
   photo?: string | null;
   photos?: string[];
+  /** The composer-rendered invite card — the best possible backdrop. */
+  card?: string | null;
   day: string;
   children: React.ReactNode;
 }) {
@@ -487,7 +490,7 @@ function Scene({
   // style's own photo. The page-photos array is deliberately ignored
   // — the backend auto-fills it with profile shots, which is exactly
   // the junk this replaces. Collage parked below for when we revisit.
-  const backdrop = photo ?? skin.defaultBg ?? null;
+  const backdrop = card ?? photo ?? skin.defaultBg ?? null;
   return (
     <main
       className="relative min-h-screen overflow-hidden"
@@ -675,6 +678,9 @@ function HostCard({
 // When the host designed an invite card in the composer, its captured
 // poster IS the page design — show it as the hero and attach a compact
 // RSVP panel beneath it instead of repeating the title/date in text.
+// Parked (Joe, July 9): the rendered card is now the page BACKDROP —
+// this poster-with-tab layout buried the RSVP.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function CardHero({
   plan,
   skin,
@@ -796,26 +802,11 @@ export default async function InvitePage({
     }
 
     const skin = skinFor(styleOverride ?? invite.plan.style);
-    if (invite.plan.card) {
-      return (
-        <Scene skin={skin} photo={invite.plan.photo} photos={invite.plan.photos} day={invite.plan.day}>
-          <CardHero plan={invite.plan} skin={skin}>
-            <RSVPCard
-              token={params.token}
-              contactName={invite.contact_name}
-              initialStatus={invite.rsvp_status}
-              planName={invite.plan.name}
-              planDay={invite.plan.day}
-              planTime={invite.plan.time}
-              planLocation={invite.plan.location}
-              compact
-            />
-          </CardHero>
-        </Scene>
-      );
-    }
+    // The composer-rendered invite card is the page BACKDROP with the
+    // host card in front (Joe, July 9) — the old "card hero" mode
+    // showed the poster small with a slim tab and buried the RSVP.
     return (
-      <Scene skin={skin} photo={invite.plan.photo} photos={invite.plan.photos} day={invite.plan.day}>
+      <Scene skin={skin} photo={invite.plan.photo} photos={invite.plan.photos} card={invite.plan.card} day={invite.plan.day}>
         <HostCard plan={invite.plan} skin={skin}>
           <RSVPCard
             token={params.token}
@@ -834,24 +825,8 @@ export default async function InvitePage({
   // Group invite — show name entry + RSVP
   if (resolved.type === 'group' && resolved.plan) {
     const skin = skinFor(styleOverride ?? resolved.plan.style);
-    if (resolved.plan.card) {
-      return (
-        <Scene skin={skin} photo={resolved.plan.photo} photos={resolved.plan.photos} day={resolved.plan.day}>
-          <CardHero plan={resolved.plan} skin={skin}>
-            <GroupRSVPCard
-              token={params.token}
-              planName={resolved.plan.name}
-              planDay={resolved.plan.day}
-              planTime={resolved.plan.time}
-              planLocation={resolved.plan.location}
-              compact
-            />
-          </CardHero>
-        </Scene>
-      );
-    }
     return (
-      <Scene skin={skin} photo={resolved.plan.photo} photos={resolved.plan.photos} day={resolved.plan.day}>
+      <Scene skin={skin} photo={resolved.plan.photo} photos={resolved.plan.photos} card={resolved.plan.card} day={resolved.plan.day}>
         <HostCard plan={resolved.plan} skin={skin}>
           <GroupRSVPCard
             token={params.token}
