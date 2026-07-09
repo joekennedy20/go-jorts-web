@@ -47,7 +47,7 @@ export function RespondCard({ token, firstName }: RespondCardProps) {
 
   if (state === 'ended') {
     return (
-      <p className="text-white/60 text-base mt-8 text-center">
+      <p className="mt-8 text-center text-base" style={{ color: 'var(--sub, rgba(255,255,255,0.6))' }}>
         the night&apos;s over — this page has expired.
       </p>
     );
@@ -84,30 +84,32 @@ export function RespondCard({ token, firstName }: RespondCardProps) {
   if (state === 'done') {
     return (
       <div className="w-full max-w-sm mt-8 flex flex-col items-center">
-        <div className="w-12 h-12 rounded-full bg-gold/20 flex items-center justify-center mb-4">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#E8A020" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full" style={{ backgroundColor: 'var(--accent-soft, rgba(232,160,32,0.2))' }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" style={{ stroke: 'var(--accent, #E8A020)' }} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
             <polyline points="20 6 9 17 4 12" />
           </svg>
         </div>
-        <p className="text-white font-bold text-[22px] text-center">
+        <p className="text-center text-[22px] font-bold" style={{ color: 'var(--ink, #fff)' }}>
           {firstName} will see your message
         </p>
-        <p className="text-white/60 text-base mt-3 text-center">
+        <p className="mt-3 text-center text-base" style={{ color: 'var(--sub, rgba(255,255,255,0.6))' }}>
           you&apos;re out too — tell your people
         </p>
         <button
           onClick={postMyOwn}
           disabled={sharing}
-          className="mt-6 bg-gold text-navy font-bold rounded-full px-8 py-4 text-center text-lg w-full disabled:opacity-60"
+          className="mt-6 w-full rounded-full px-8 py-4 text-center text-lg font-bold shadow-[0_8px_24px_rgba(0,0,0,0.3)] disabled:opacity-60"
+          style={{ backgroundColor: 'var(--accent, #E8A020)', color: 'var(--on-accent, #1A2E3D)' }}
         >
           {sharing ? 'getting your story…' : 'post your own story'}
         </button>
-        <p className="text-white/40 text-xs mt-2 text-center">
+        <p className="mt-2 text-center text-xs" style={{ color: 'var(--sub, rgba(255,255,255,0.4))' }}>
           the same I&apos;M OUT look, ready for your story
         </p>
         <a
           href={APP_STORE_URL}
-          className="mt-4 border border-white/25 text-white font-semibold rounded-full px-8 py-3.5 text-center text-base w-full"
+          className="mt-4 w-full rounded-full border px-8 py-3.5 text-center text-base font-semibold"
+          style={{ borderColor: 'var(--sub, rgba(255,255,255,0.25))', color: 'var(--ink, #fff)' }}
         >
           Get Jorts
         </a>
@@ -123,20 +125,23 @@ export function RespondCard({ token, firstName }: RespondCardProps) {
         onChange={e => setName(e.target.value)}
         placeholder="your name"
         maxLength={40}
-        className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3.5 text-white placeholder-white/40 text-base outline-none focus:border-gold"
+        className="w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3.5 text-base outline-none placeholder:text-white/40"
+        style={{ color: 'var(--ink, #fff)' }}
       />
-      {error && <p className="text-gold text-sm">{error}</p>}
+      {error && <p className="text-sm font-semibold" style={{ color: 'var(--accent, #E8A020)' }}>{error}</p>}
       <button
         onClick={() => respond('out_too')}
         disabled={state === 'submitting'}
-        className="bg-gold text-navy font-bold rounded-full px-8 py-4 text-lg disabled:opacity-60"
+        className="rounded-full px-8 py-4 text-lg font-bold shadow-[0_8px_24px_rgba(0,0,0,0.3)] disabled:opacity-60"
+        style={{ backgroundColor: 'var(--accent, #E8A020)', color: 'var(--on-accent, #1A2E3D)' }}
       >
         I&apos;m out too 🍻
       </button>
       <button
         onClick={() => respond('where_you_at')}
         disabled={state === 'submitting'}
-        className="bg-white/10 text-white font-semibold rounded-full px-8 py-4 text-base disabled:opacity-60"
+        className="rounded-full border bg-white/5 px-8 py-4 text-base font-semibold disabled:opacity-60"
+        style={{ borderColor: 'var(--sub, rgba(255,255,255,0.25))', color: 'var(--ink, #fff)' }}
       >
         where you at?
       </button>

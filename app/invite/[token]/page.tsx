@@ -110,7 +110,12 @@ interface Skin {
   titleClass?: string;
   /** Handwritten note-card line in the collage. */
   quote: string;
+  /** Style's own invite-card photo — the page backdrop when the host
+   *  hasn't set any photos, so the page never renders empty. */
+  defaultBg?: string;
 }
+
+const STYLE_BG = 'https://storage.googleapis.com/disco-sector-478219-c9-uploads/plans/style-defaults';
 
 const DEFAULT_SKIN: Skin = {
   mode: 'dark',
@@ -161,6 +166,7 @@ const SKINS: Record<string, Skin> = {
     quote: 'good people, good drinks \u2726',
   },
   poolside: {
+    defaultBg: `${STYLE_BG}/poolside-bg.jpg`,
     ...LIGHT_BASE,
     scene:
       'radial-gradient(120% 55% at 50% 0%, rgba(79,201,214,0.25), transparent 55%),' +
@@ -172,6 +178,7 @@ const SKINS: Record<string, Skin> = {
     quote: 'salt air + good company',
   },
   boatday: {
+    defaultBg: `${STYLE_BG}/jfk-cone-cropped.jpg`,
     ...LIGHT_BASE,
     scene:
       'radial-gradient(120% 55% at 50% 0%, rgba(120,180,235,0.3), transparent 55%),' +
@@ -183,6 +190,7 @@ const SKINS: Record<string, Skin> = {
     quote: 'meet you on the water',
   },
   houseparty: {
+    defaultBg: `${STYLE_BG}/houseparty-bg.jpg`,
     ...DARK_BASE,
     scene:
       'radial-gradient(110% 50% at 50% 0%, rgba(255,122,69,0.2), transparent 55%),' +
@@ -207,6 +215,7 @@ const SKINS: Record<string, Skin> = {
     quote: "can't wait for this one \u2728",
   },
   wewantbeer: {
+    defaultBg: `${STYLE_BG}/wewantbeer-bg.jpg`,
     ...LIGHT_BASE,
     scene:
       'radial-gradient(110% 50% at 50% 0%, rgba(217,164,65,0.28), transparent 55%),' +
@@ -219,6 +228,7 @@ const SKINS: Record<string, Skin> = {
     quote: "first round's on us",
   },
   bookclub: {
+    defaultBg: `${STYLE_BG}/bookclub-bg.jpg`,
     ...LIGHT_BASE,
     scene:
       'radial-gradient(110% 50% at 50% 0%, rgba(201,180,88,0.22), transparent 55%),' +
@@ -230,6 +240,7 @@ const SKINS: Record<string, Skin> = {
     quote: 'good times \u2726',
   },
   runclub: {
+    defaultBg: `${STYLE_BG}/runclub-bg.jpg`,
     ...LIGHT_BASE,
     scene:
       'radial-gradient(110% 55% at 50% 0%, rgba(236,154,118,0.3), transparent 55%),' +
@@ -241,6 +252,7 @@ const SKINS: Record<string, Skin> = {
     quote: 'early miles, better days',
   },
   dinnerparty: {
+    defaultBg: `${STYLE_BG}/dinnerparty-bg.jpg`,
     ...DARK_BASE,
     scene:
       'radial-gradient(110% 50% at 50% 0%, rgba(224,149,95,0.18), transparent 55%),' +
@@ -255,6 +267,7 @@ const SKINS: Record<string, Skin> = {
     quote: 'good people\ngood wine\ngood night',
   },
   balloonparty: {
+    defaultBg: `${STYLE_BG}/balloonparty-bg.jpg`,
     ...LIGHT_BASE,
     scene:
       'radial-gradient(110% 50% at 50% 0%, rgba(180,150,220,0.3), transparent 55%),' +
@@ -266,6 +279,7 @@ const SKINS: Record<string, Skin> = {
     quote: 'girls just wanna have fun \u2661',
   },
   tailgate: {
+    defaultBg: `${STYLE_BG}/tailgate-bg.jpg`,
     ...LIGHT_BASE,
     scene:
       'radial-gradient(110% 50% at 50% 0%, rgba(214,167,63,0.3), transparent 55%),' +
@@ -278,6 +292,7 @@ const SKINS: Record<string, Skin> = {
     quote: 'game day \u2726',
   },
   dogpark: {
+    defaultBg: `${STYLE_BG}/dogpark-bg.jpg`,
     ...LIGHT_BASE,
     scene:
       'radial-gradient(110% 50% at 50% 0%, rgba(201,162,59,0.26), transparent 55%),' +
@@ -374,6 +389,9 @@ const COLLAGE_SLOTS: Array<{
 const GRAIN =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E\")";
 
+// Parked (Joe, July 9): backdrop is the invite photo for now — kept
+// for when the collage look returns.
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function Collage({ photos, day, quote }: { photos: string[]; day: string; quote: string }) {
   return (
     <div className="absolute inset-0">
@@ -464,44 +482,22 @@ function Scene({
   day: string;
   children: React.ReactNode;
 }) {
-  const collage = (photos ?? []).slice(0, 4);
+  // Backdrop = THE INVITE IMAGE, nothing else (Joe, July 9): the
+  // photo on the invite card when the host picked one, otherwise the
+  // style's own photo. The page-photos array is deliberately ignored
+  // — the backend auto-fills it with profile shots, which is exactly
+  // the junk this replaces. Collage parked below for when we revisit.
+  const backdrop = photo ?? skin.defaultBg ?? null;
   return (
     <main
       className="relative min-h-screen overflow-hidden"
       style={{ backgroundColor: skin.mode === 'light' ? '#B9AE96' : '#0a141b' }}
     >
-      {collage.length >= 2 ? (
+      {backdrop ? (
         <>
-          {/* Themed ground with a woven-texture read under the polaroids */}
-          <div className="absolute inset-0" style={{ background: skin.scene }} />
-          <div
-            className="absolute inset-0 opacity-[0.16] mix-blend-overlay"
-            style={{ backgroundImage: GRAIN }}
-          />
-          <Collage photos={collage} day={day} quote={skin.quote} />
-          <div
-            className="absolute inset-0 z-[4]"
-            style={{
-              background:
-                skin.mode === 'light'
-                  ? // Light skins: bright collage, a whisper of vignette
-                    'radial-gradient(120% 90% at 50% 40%, transparent 60%, rgba(40,33,22,0.28) 100%)'
-                  : 'radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(6,12,17,0.5) 100%),' +
-                    'linear-gradient(180deg, rgba(6,12,17,0.12) 0%, rgba(6,12,17,0.38) 55%, rgba(6,12,17,0.66) 100%)',
-            }}
-          />
-          <div
-            className="absolute inset-0 z-[4] opacity-[0.1]"
-            style={{ backgroundImage: GRAIN }}
-          />
-        </>
-      ) : photo || collage[0] ? (
-        <>
-          {/* The host's own photo, full-bleed. The scrim + skin tint
-              keep the frosted card readable on any shot. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            src={(photo ?? collage[0]) as string}
+            src={backdrop}
             alt=""
             className="absolute inset-0 h-full w-full object-cover"
           />
@@ -509,12 +505,16 @@ function Scene({
             className="absolute inset-0"
             style={{
               background:
-                'linear-gradient(180deg, rgba(6,12,17,0.25) 0%, rgba(6,12,17,0.55) 55%, rgba(6,12,17,0.8) 100%)',
+                'linear-gradient(180deg, rgba(6,12,17,0.14) 0%, rgba(6,12,17,0.34) 55%, rgba(6,12,17,0.55) 100%)',
             }}
           />
           <div
-            className="absolute inset-0 opacity-40"
+            className="absolute inset-0 opacity-[0.12]"
             style={{ background: skin.scene }}
+          />
+          <div
+            className="absolute inset-0 opacity-[0.1] mix-blend-overlay"
+            style={{ backgroundImage: GRAIN }}
           />
         </>
       ) : (
@@ -649,12 +649,15 @@ function HostCard({
       )}
 
       <div className="mt-5 flex items-center border-t pt-4" style={{ borderColor: 'var(--hair)' }}>
-        <span
-          className="text-[17px] font-extrabold tracking-tight"
-          style={{ color: skin.mode === 'light' ? 'var(--ink)' : 'var(--accent)' }}
-        >
-          jorts
-        </span>
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src="/jorts-logo.png"
+          alt="jorts"
+          className="h-8 w-auto"
+          style={{
+            filter: skin.mode === 'dark' ? 'brightness(0) invert(0.92)' : 'none',
+          }}
+        />
         <a
           href={`https://apps.apple.com/app/id${APP_STORE_ID}`}
           className="ml-auto text-[11px] font-bold"
