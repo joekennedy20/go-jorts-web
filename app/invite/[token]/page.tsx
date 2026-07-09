@@ -559,6 +559,8 @@ function HostCard({
         ['--hair' as string]: skin.hair,
         ['--ghost' as string]: skin.ghost,
         ['--card' as string]: skin.card,
+        ['--field' as string]:
+          skin.mode === 'light' ? 'rgba(34,30,24,0.05)' : 'rgba(255,255,255,0.08)',
       }}
     >
       {/* Host face bridging the card's top edge */}
