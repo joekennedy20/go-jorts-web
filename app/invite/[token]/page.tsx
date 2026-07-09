@@ -1,4 +1,12 @@
 import type { Metadata } from 'next';
+import {
+  Playfair_Display,
+  DM_Serif_Display,
+  Dancing_Script,
+  Caveat,
+  Archivo,
+  Oswald,
+} from 'next/font/google';
 
 import { RSVPCard } from './rsvp-card';
 import { GroupRSVPCard } from './group-rsvp-card';
@@ -13,6 +21,16 @@ import {
 } from './invite-data';
 
 const APP_STORE_ID = '6759267210';
+
+// Real editorial faces — the single biggest "magazine vs template"
+// difference. System-font fallbacks (Georgia / Snell Roundhand) were
+// exactly what made the old page read cheap.
+const playfair = Playfair_Display({ subsets: ['latin'], weight: ['500', '600'], style: ['normal', 'italic'] });
+const dmSerif = DM_Serif_Display({ subsets: ['latin'], weight: '400', style: ['normal', 'italic'] });
+const dancing = Dancing_Script({ subsets: ['latin'], weight: ['500', '600'] });
+const caveat = Caveat({ subsets: ['latin'], weight: ['500', '600'] });
+const archivo = Archivo({ subsets: ['latin'], weight: ['500', '600', '700', '800'] });
+const oswald = Oswald({ subsets: ['latin'], weight: ['500', '600'] });
 
 // Open Graph / Twitter metadata so a texted invite link unfurls into a
 // compact strip — the plan's name + day as the title, details in the
@@ -74,101 +92,202 @@ export async function generateMetadata({
 // overrides — handy for previews, harmless in prod (visual only).
 
 interface Skin {
+  /** Card + type palette direction. Light cards get dark ink text. */
+  mode: 'light' | 'dark';
+  /** Wash behind the collage / fallback scene. */
   scene: string;
-  cardBg: string;
+  /** SOLID card color — cream, ink, lilac. No frosted translucency:
+   *  the mock's cards read as printed stock, not glass. */
+  card: string;
+  ink: string;
+  sub: string;
+  hair: string;
   accent: string;
   accentSoft: string;
+  onAccent: string;
+  ghost: string;
   titleFont: string;
   titleClass?: string;
+  /** Handwritten note-card line in the collage. */
+  quote: string;
 }
 
-const SERIF = "Georgia, 'Times New Roman', serif";
-const SCRIPT = "'Snell Roundhand', 'Bradley Hand', 'Segoe Script', cursive";
-const CONDENSED = "'Arial Narrow', 'Helvetica Neue', sans-serif";
-
 const DEFAULT_SKIN: Skin = {
+  mode: 'dark',
   scene:
     'radial-gradient(120% 55% at 50% 0%, rgba(232,160,32,0.16), transparent 55%),' +
-    'radial-gradient(90% 40% at 15% 100%, rgba(26,58,92,0.55), transparent 60%),' +
-    'linear-gradient(180deg, #1b3441 0%, #101d26 55%, #0a141b 100%)',
-  cardBg: 'rgba(20, 34, 43, 0.8)',
-  accent: '#E8A020',
-  accentSoft: 'rgba(232,160,32,0.2)',
-  titleFont: SERIF,
+    'linear-gradient(180deg, #1b2530 0%, #12191f 55%, #0b1015 100%)',
+  card: '#181B20',
+  ink: '#F3EFE7',
+  sub: '#989184',
+  hair: 'rgba(255,255,255,0.12)',
+  accent: '#E1A33C',
+  accentSoft: 'rgba(225,163,60,0.18)',
+  onAccent: '#1C1710',
+  ghost: 'rgba(255,255,255,0.22)',
+  titleFont: playfair.style.fontFamily,
+  quote: 'see you there \u2726',
+};
+
+const LIGHT_BASE = {
+  mode: 'light' as const,
+  ink: '#221E18',
+  sub: '#7A7367',
+  hair: 'rgba(34,30,24,0.12)',
+  ghost: 'rgba(34,30,24,0.25)',
+  onAccent: '#FFFDF7',
+};
+const DARK_BASE = {
+  mode: 'dark' as const,
+  ink: '#F3EFE7',
+  sub: '#98918A',
+  hair: 'rgba(255,255,255,0.12)',
+  ghost: 'rgba(255,255,255,0.22)',
+  onAccent: '#FFFDF7',
 };
 
 const SKINS: Record<string, Skin> = {
   cocktail: {
+    ...DARK_BASE,
     scene:
-      'radial-gradient(110% 50% at 50% 0%, rgba(232,160,32,0.22), transparent 55%),' +
-      'radial-gradient(70% 40% at 85% 90%, rgba(120,50,90,0.35), transparent 65%),' +
-      'linear-gradient(180deg, #241521 0%, #150d14 60%, #0c070c 100%)',
-    cardBg: 'rgba(30, 19, 29, 0.8)',
-    accent: '#E8A020',
-    accentSoft: 'rgba(232,160,32,0.2)',
-    titleFont: SERIF,
+      'radial-gradient(110% 50% at 50% 0%, rgba(225,163,60,0.2), transparent 55%),' +
+      'linear-gradient(180deg, #241a14 0%, #16100c 60%, #0d0908 100%)',
+    card: '#16130F',
+    accent: '#E1A33C',
+    accentSoft: 'rgba(225,163,60,0.16)',
+    onAccent: '#1C1710',
+    titleFont: playfair.style.fontFamily,
     titleClass: 'italic',
+    quote: 'good people, good drinks \u2726',
   },
   poolside: {
+    ...LIGHT_BASE,
     scene:
-      'radial-gradient(120% 55% at 50% 0%, rgba(80,200,215,0.2), transparent 55%),' +
-      'radial-gradient(80% 45% at 10% 100%, rgba(20,110,130,0.45), transparent 60%),' +
-      'linear-gradient(180deg, #0e3742 0%, #0a2731 55%, #06171e 100%)',
-    cardBg: 'rgba(13, 42, 51, 0.8)',
-    accent: '#4FC9D6',
-    accentSoft: 'rgba(79,201,214,0.2)',
-    titleFont: SERIF,
-  },
-  houseparty: {
-    scene:
-      'radial-gradient(110% 50% at 50% 0%, rgba(255,122,69,0.2), transparent 55%),' +
-      'radial-gradient(70% 45% at 90% 95%, rgba(170,50,120,0.35), transparent 65%),' +
-      'linear-gradient(180deg, #29141f 0%, #180c14 60%, #0e070c 100%)',
-    cardBg: 'rgba(36, 21, 33, 0.8)',
-    accent: '#FF7A45',
-    accentSoft: 'rgba(255,122,69,0.2)',
-    titleFont: CONDENSED,
-    titleClass: 'font-black uppercase tracking-wide',
+      'radial-gradient(120% 55% at 50% 0%, rgba(79,201,214,0.25), transparent 55%),' +
+      'linear-gradient(180deg, #cfe9ec 0%, #b7d8de 55%, #9dc4cd 100%)',
+    card: '#F4F0E6',
+    accent: '#1F97A6',
+    accentSoft: 'rgba(31,151,166,0.14)',
+    titleFont: playfair.style.fontFamily,
+    quote: 'salt air + good company',
   },
   boatday: {
+    ...LIGHT_BASE,
     scene:
-      'radial-gradient(120% 55% at 50% 0%, rgba(120,180,235,0.22), transparent 55%),' +
-      'radial-gradient(90% 40% at 15% 100%, rgba(30,80,140,0.5), transparent 60%),' +
-      'linear-gradient(180deg, #143least 0%, #0f2438 55%, #081420 100%)'.replace('#143least', '#1a3a5c'),
-    cardBg: 'rgba(15, 36, 56, 0.8)',
-    accent: '#5AA9E6',
-    accentSoft: 'rgba(90,169,230,0.2)',
-    titleFont: SERIF,
+      'radial-gradient(120% 55% at 50% 0%, rgba(120,180,235,0.3), transparent 55%),' +
+      'linear-gradient(180deg, #d4e4f2 0%, #b9d0e6 55%, #9cbbd8 100%)',
+    card: '#F4F0E6',
+    accent: '#33689E',
+    accentSoft: 'rgba(51,104,158,0.14)',
+    titleFont: playfair.style.fontFamily,
+    quote: 'meet you on the water',
+  },
+  houseparty: {
+    ...DARK_BASE,
+    scene:
+      'radial-gradient(110% 50% at 50% 0%, rgba(255,122,69,0.2), transparent 55%),' +
+      'linear-gradient(180deg, #241318 0%, #150b10 60%, #0d070b 100%)',
+    card: '#17131A',
+    accent: '#FF7A45',
+    accentSoft: 'rgba(255,122,69,0.16)',
+    onAccent: '#221008',
+    titleFont: archivo.style.fontFamily,
+    titleClass: 'font-black uppercase tracking-wide',
+    quote: 'good music, late nights',
   },
   girldinner: {
+    ...LIGHT_BASE,
     scene:
-      'radial-gradient(110% 50% at 50% 0%, rgba(240,180,140,0.18), transparent 55%),' +
-      'radial-gradient(75% 45% at 85% 95%, rgba(140,60,60,0.35), transparent 65%),' +
-      'linear-gradient(180deg, #2a1417 0%, #1a0d10 60%, #100709 100%)',
-    cardBg: 'rgba(38, 20, 23, 0.8)',
-    accent: '#E8B08A',
-    accentSoft: 'rgba(232,176,138,0.2)',
-    titleFont: SCRIPT,
+      'radial-gradient(110% 50% at 50% 0%, rgba(214,150,110,0.28), transparent 55%),' +
+      'linear-gradient(180deg, #e8d9c8 0%, #dcc8b2 55%, #c9b098 100%)',
+    card: '#F5EFE3',
+    accent: '#A4552F',
+    accentSoft: 'rgba(164,85,47,0.12)',
+    titleFont: dancing.style.fontFamily,
+    quote: "can't wait for this one \u2728",
   },
   wewantbeer: {
+    ...LIGHT_BASE,
     scene:
-      'radial-gradient(110% 50% at 50% 0%, rgba(217,164,65,0.2), transparent 55%),' +
-      'linear-gradient(180deg, #241b10 0%, #17110a 60%, #0d0a06 100%)',
-    cardBg: 'rgba(33, 25, 15, 0.82)',
-    accent: '#D9A441',
-    accentSoft: 'rgba(217,164,65,0.2)',
-    titleFont: CONDENSED,
+      'radial-gradient(110% 50% at 50% 0%, rgba(217,164,65,0.28), transparent 55%),' +
+      'linear-gradient(180deg, #e4d6bc 0%, #d4c2a2 55%, #bfa989 100%)',
+    card: '#F3ECDD',
+    accent: '#8A6420',
+    accentSoft: 'rgba(138,100,32,0.12)',
+    titleFont: archivo.style.fontFamily,
     titleClass: 'font-black uppercase tracking-wide',
+    quote: "first round's on us",
   },
   bookclub: {
+    ...LIGHT_BASE,
     scene:
-      'radial-gradient(110% 50% at 50% 0%, rgba(201,180,88,0.16), transparent 55%),' +
-      'radial-gradient(80% 45% at 10% 100%, rgba(30,70,45,0.45), transparent 60%),' +
-      'linear-gradient(180deg, #14231a 0%, #0e1912 60%, #080f0b 100%)',
-    cardBg: 'rgba(18, 33, 25, 0.8)',
-    accent: '#C9B458',
-    accentSoft: 'rgba(201,180,88,0.2)',
-    titleFont: SERIF,
+      'radial-gradient(110% 50% at 50% 0%, rgba(201,180,88,0.22), transparent 55%),' +
+      'linear-gradient(180deg, #dfd9c6 0%, #cdc5ad 55%, #b3aa8f 100%)',
+    card: '#F4EFE3',
+    accent: '#26221B',
+    accentSoft: 'rgba(38,34,27,0.08)',
+    titleFont: playfair.style.fontFamily,
+    quote: 'good times \u2726',
+  },
+  runclub: {
+    ...LIGHT_BASE,
+    scene:
+      'radial-gradient(110% 55% at 50% 0%, rgba(236,154,118,0.3), transparent 55%),' +
+      'linear-gradient(180deg, #ecd8c8 0%, #dfc0ab 55%, #c8a68e 100%)',
+    card: '#F6F0E5',
+    accent: '#C96A3B',
+    accentSoft: 'rgba(201,106,59,0.13)',
+    titleFont: playfair.style.fontFamily,
+    quote: 'early miles, better days',
+  },
+  dinnerparty: {
+    ...DARK_BASE,
+    scene:
+      'radial-gradient(110% 50% at 50% 0%, rgba(224,149,95,0.18), transparent 55%),' +
+      'linear-gradient(180deg, #1c1410 0%, #120d0a 60%, #0b0807 100%)',
+    card: '#15120E',
+    accent: '#7B8B5A',
+    accentSoft: 'rgba(123,139,90,0.16)',
+    // DM Serif italic — matches the app's dinner party card (Joe
+    // vetoed cursive there; the page follows the card).
+    titleFont: dmSerif.style.fontFamily,
+    titleClass: 'italic',
+    quote: 'good people\ngood wine\ngood night',
+  },
+  balloonparty: {
+    ...LIGHT_BASE,
+    scene:
+      'radial-gradient(110% 50% at 50% 0%, rgba(180,150,220,0.3), transparent 55%),' +
+      'linear-gradient(180deg, #ddd2ec 0%, #c9bade 55%, #b09cc9 100%)',
+    card: '#F0EBF6',
+    accent: '#6D55A8',
+    accentSoft: 'rgba(109,85,168,0.12)',
+    titleFont: playfair.style.fontFamily,
+    quote: 'girls just wanna have fun \u2661',
+  },
+  tailgate: {
+    ...LIGHT_BASE,
+    scene:
+      'radial-gradient(110% 50% at 50% 0%, rgba(214,167,63,0.3), transparent 55%),' +
+      'linear-gradient(180deg, #e0d2b4 0%, #cbb890 55%, #b09d74 100%)',
+    card: '#F3ECDA',
+    accent: '#A87A1F',
+    accentSoft: 'rgba(168,122,31,0.13)',
+    titleFont: oswald.style.fontFamily,
+    titleClass: 'uppercase tracking-wide font-semibold',
+    quote: 'game day \u2726',
+  },
+  dogpark: {
+    ...LIGHT_BASE,
+    scene:
+      'radial-gradient(110% 50% at 50% 0%, rgba(201,162,59,0.26), transparent 55%),' +
+      'linear-gradient(180deg, #d9d6c4 0%, #c2c0a8 55%, #a5a488 100%)',
+    card: '#F4F0E3',
+    accent: '#96762A',
+    accentSoft: 'rgba(150,118,42,0.13)',
+    titleFont: oswald.style.fontFamily,
+    titleClass: 'uppercase tracking-wide font-semibold',
+    quote: 'bring the ball \u2726',
   },
 };
 
@@ -187,7 +306,8 @@ function initialColor(name: string): string {
 }
 
 function GuestAvatar({ guest, size }: { guest: PlanGuest; size: number }) {
-  const cls = 'rounded-full ring-2 ring-[#14222b] object-cover flex-none';
+  const cls = 'rounded-full object-cover flex-none';
+  const ring = { boxShadow: '0 0 0 2px var(--card, #14222b)' };
   if (guest.picture) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
@@ -197,7 +317,7 @@ function GuestAvatar({ guest, size }: { guest: PlanGuest; size: number }) {
         width={size}
         height={size}
         className={cls}
-        style={{ width: size, height: size }}
+        style={{ width: size, height: size, ...ring }}
       />
     );
   }
@@ -209,6 +329,7 @@ function GuestAvatar({ guest, size }: { guest: PlanGuest; size: number }) {
         height: size,
         backgroundColor: initialColor(guest.name),
         fontSize: size * 0.42,
+        ...ring,
       }}
     >
       {guest.name.charAt(0).toUpperCase()}
@@ -253,7 +374,7 @@ const COLLAGE_SLOTS: Array<{
 const GRAIN =
   "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E\")";
 
-function Collage({ photos, day }: { photos: string[]; day: string }) {
+function Collage({ photos, day, quote }: { photos: string[]; day: string; quote: string }) {
   return (
     <div className="absolute inset-0">
       {COLLAGE_SLOTS.map((slot, i) => {
@@ -297,17 +418,21 @@ function Collage({ photos, day }: { photos: string[]; day: string }) {
           </div>
         );
       })}
-      {/* Handwritten date note — the scrapbook's connective tissue */}
+      {/* Handwritten note card — the scrapbook's connective tissue.
+          Skin quote in a real handwriting face, date beneath. */}
       <div
-        className="collage-sway absolute bottom-[6%] left-[7%] z-[3] -rotate-[5deg] rounded-[2px] bg-[#f6efdf] px-3.5 py-2 shadow-[0_6px_16px_rgba(0,0,0,0.45)]"
+        className="collage-sway absolute bottom-[6%] left-[7%] z-[3] -rotate-[5deg] rounded-[3px] bg-[#f8f2e4] px-4 py-2.5 shadow-[0_8px_20px_rgba(0,0,0,0.35)]"
         style={{
-          fontFamily: "'Snell Roundhand', 'Bradley Hand', 'Segoe Script', cursive",
+          fontFamily: caveat.style.fontFamily,
           animationDuration: '9s',
           animationDelay: '0.4s',
         }}
       >
-        <span className="text-[15px] font-semibold text-[#5d4a35]">
-          {formatDay(day)} ✦
+        <span className="block whitespace-pre-line text-[19px] font-semibold leading-[1.15] text-[#4a3d2c]">
+          {quote}
+        </span>
+        <span className="mt-0.5 block text-[13px] font-medium text-[#8a7a5f]">
+          {formatDay(day)}
         </span>
       </div>
       <style>{`
@@ -341,7 +466,10 @@ function Scene({
 }) {
   const collage = (photos ?? []).slice(0, 4);
   return (
-    <main className="relative min-h-screen overflow-hidden bg-[#0a141b]">
+    <main
+      className="relative min-h-screen overflow-hidden"
+      style={{ backgroundColor: skin.mode === 'light' ? '#B9AE96' : '#0a141b' }}
+    >
       {collage.length >= 2 ? (
         <>
           {/* Themed ground with a woven-texture read under the polaroids */}
@@ -350,13 +478,16 @@ function Scene({
             className="absolute inset-0 opacity-[0.16] mix-blend-overlay"
             style={{ backgroundImage: GRAIN }}
           />
-          <Collage photos={collage} day={day} />
+          <Collage photos={collage} day={day} quote={skin.quote} />
           <div
             className="absolute inset-0 z-[4]"
             style={{
               background:
-                'radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(6,12,17,0.5) 100%),' +
-                'linear-gradient(180deg, rgba(6,12,17,0.12) 0%, rgba(6,12,17,0.38) 55%, rgba(6,12,17,0.66) 100%)',
+                skin.mode === 'light'
+                  ? // Light skins: bright collage, a whisper of vignette
+                    'radial-gradient(120% 90% at 50% 40%, transparent 60%, rgba(40,33,22,0.28) 100%)'
+                  : 'radial-gradient(120% 90% at 50% 40%, transparent 55%, rgba(6,12,17,0.5) 100%),' +
+                    'linear-gradient(180deg, rgba(6,12,17,0.12) 0%, rgba(6,12,17,0.38) 55%, rgba(6,12,17,0.66) 100%)',
             }}
           />
           <div
@@ -413,29 +544,34 @@ function HostCard({
 
   return (
     <div
-      className="relative w-full max-w-[380px] rounded-3xl border border-white/10 shadow-[0_24px_60px_rgba(0,0,0,0.55),0_2px_8px_rgba(0,0,0,0.4)] backdrop-blur-xl px-5 pb-5 pt-12"
+      className="relative w-full max-w-[380px] rounded-[28px] px-6 pb-5 pt-14 shadow-[0_28px_70px_rgba(0,0,0,0.45),0_4px_14px_rgba(0,0,0,0.28)]"
       style={{
-        backgroundColor: skin.cardBg,
-        backgroundImage:
-          'radial-gradient(120% 60% at 50% 0%, rgba(255,255,255,0.06), transparent 60%)',
+        backgroundColor: skin.card,
+        fontFamily: archivo.style.fontFamily,
         ['--accent' as string]: skin.accent,
         ['--accent-soft' as string]: skin.accentSoft,
+        ['--on-accent' as string]: skin.onAccent,
+        ['--ink' as string]: skin.ink,
+        ['--sub' as string]: skin.sub,
+        ['--hair' as string]: skin.hair,
+        ['--ghost' as string]: skin.ghost,
+        ['--card' as string]: skin.card,
       }}
     >
       {/* Host face bridging the card's top edge */}
-      <div className="absolute -top-9 left-1/2 -translate-x-1/2">
+      <div className="absolute -top-10 left-1/2 -translate-x-1/2">
         {host?.picture ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={host.picture}
             alt={host.name}
-            className="h-[72px] w-[72px] rounded-full border-[3px] object-cover shadow-lg"
-            style={{ borderColor: skin.accent }}
+            className="h-[80px] w-[80px] rounded-full border-4 object-cover shadow-[0_10px_26px_rgba(0,0,0,0.35)]"
+            style={{ borderColor: skin.card }}
           />
         ) : (
           <span
-            className="flex h-[72px] w-[72px] items-center justify-center rounded-full border-[3px] text-[28px] font-bold text-white shadow-lg"
-            style={{ backgroundColor: initialColor(host?.name ?? 'J'), borderColor: skin.accent }}
+            className="flex h-[80px] w-[80px] items-center justify-center rounded-full border-4 text-[30px] font-bold text-white shadow-[0_10px_26px_rgba(0,0,0,0.35)]"
+            style={{ backgroundColor: initialColor(host?.name ?? 'J'), borderColor: skin.card }}
           >
             {(host?.name ?? '?').charAt(0).toUpperCase()}
           </span>
@@ -443,19 +579,19 @@ function HostCard({
       </div>
 
       <p
-        className="text-center text-[10px] font-bold uppercase tracking-[0.22em]"
-        style={{ color: skin.accent }}
+        className="text-center text-[11px] font-bold uppercase tracking-[0.26em]"
+        style={{ color: 'var(--sub)' }}
       >
-        {host?.name ? `${host.name}’s plan` : 'You’re invited'}
+        {host?.name ? `${host.name}\u2019s plan` : 'You\u2019re invited'}
       </p>
       <h1
-        className={`mt-1.5 text-center text-[30px] font-semibold leading-[1.15] text-white ${skin.titleClass ?? ''}`}
-        style={{ fontFamily: skin.titleFont }}
+        className={`mt-2 text-center text-[36px] font-medium leading-[1.12] ${skin.titleClass ?? ''}`}
+        style={{ fontFamily: skin.titleFont, color: 'var(--ink)' }}
       >
         {plan.name}
       </h1>
 
-      <div className="mt-4 flex items-center gap-2.5 text-[13.5px] font-semibold text-[#d7e1e8]">
+      <div className="mt-5 flex items-center gap-2.5 text-[14px] font-semibold" style={{ color: 'var(--ink)' }}>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={skin.accent} strokeWidth="2" strokeLinecap="round" className="flex-none">
           <rect x="3" y="4" width="18" height="18" rx="2" />
           <line x1="16" y1="2" x2="16" y2="6" />
@@ -466,7 +602,7 @@ function HostCard({
         {plan.time ? ` · ${plan.time}` : ''}
       </div>
       {plan.location && (
-        <div className="mt-2 flex items-center gap-2.5 text-[13.5px] font-semibold text-[#d7e1e8]">
+        <div className="mt-2.5 flex items-center gap-2.5 text-[14px] font-semibold" style={{ color: 'var(--ink)' }}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={skin.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-none">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
             <circle cx="12" cy="10" r="3" />
@@ -480,8 +616,8 @@ function HostCard({
 
       {(shown.length > 0 || invited > 0) && (
         <>
-          <div className="mt-5 h-px bg-white/10" />
-          <p className="mt-4 text-[10px] font-bold uppercase tracking-[0.2em] text-[#7f95a3]">
+          <div className="mt-5 h-px" style={{ backgroundColor: 'var(--hair)' }} />
+          <p className="mt-4 text-[10px] font-bold uppercase tracking-[0.22em]" style={{ color: 'var(--sub)' }}>
             {host?.name ? `Invited by ${host.name}` : 'The group'}
           </p>
           <div className="mt-2.5 flex items-center">
@@ -490,17 +626,20 @@ function HostCard({
                 <GuestAvatar key={`${g.name}-${i}`} guest={g} size={30} />
               ))}
               {overflow > 0 && (
-                <span className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-full bg-[#3a5262] text-[11px] font-bold text-white ring-2 ring-[#14222b]">
+                <span
+                  className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-full text-[11px] font-bold"
+                  style={{ backgroundColor: 'var(--accent-soft)', color: 'var(--ink)', boxShadow: '0 0 0 2px var(--card)' }}
+                >
                   +{overflow}
                 </span>
               )}
             </div>
             {invited > 0 && (
               <div className="ml-auto text-right leading-none">
-                <span className="block text-[22px] font-extrabold text-white">
+                <span className="block text-[26px] font-extrabold" style={{ color: 'var(--ink)' }}>
                   {invited}
                 </span>
-                <span className="text-[9px] font-bold uppercase tracking-[0.18em] text-[#7f95a3]">
+                <span className="text-[9px] font-bold uppercase tracking-[0.2em]" style={{ color: 'var(--sub)' }}>
                   invited
                 </span>
               </div>
@@ -509,16 +648,17 @@ function HostCard({
         </>
       )}
 
-      <div className="mt-5 flex items-center border-t border-white/10 pt-4">
+      <div className="mt-5 flex items-center border-t pt-4" style={{ borderColor: 'var(--hair)' }}>
         <span
           className="text-[17px] font-extrabold tracking-tight"
-          style={{ color: skin.accent }}
+          style={{ color: skin.mode === 'light' ? 'var(--ink)' : 'var(--accent)' }}
         >
           jorts
         </span>
         <a
           href={`https://apps.apple.com/app/id${APP_STORE_ID}`}
-          className="ml-auto text-[11px] font-bold text-[#7f95a3]"
+          className="ml-auto text-[11px] font-bold"
+          style={{ color: 'var(--sub)' }}
         >
           Get the app &rarr;
         </a>
@@ -565,9 +705,16 @@ function CardHero({
         <div
           className="relative mx-3 -mt-1 rounded-b-xl rounded-t-md border border-white/10 px-3.5 pb-3 pt-2.5 shadow-[0_14px_36px_rgba(0,0,0,0.5)] backdrop-blur-xl"
           style={{
-            backgroundColor: skin.cardBg,
+            backgroundColor: skin.card,
+            fontFamily: archivo.style.fontFamily,
             ['--accent' as string]: skin.accent,
             ['--accent-soft' as string]: skin.accentSoft,
+            ['--on-accent' as string]: skin.onAccent,
+            ['--ink' as string]: skin.ink,
+            ['--sub' as string]: skin.sub,
+            ['--hair' as string]: skin.hair,
+            ['--ghost' as string]: skin.ghost,
+            ['--card' as string]: skin.card,
           }}
         >
           {children}
@@ -578,7 +725,10 @@ function CardHero({
                   <GuestAvatar key={`${g.name}-${i}`} guest={g} size={26} />
                 ))}
                 {overflow > 0 && (
-                  <span className="flex h-[26px] w-[26px] flex-none items-center justify-center rounded-full bg-[#3a5262] text-[10px] font-bold text-white ring-2 ring-[#14222b]">
+                  <span
+                    className="flex h-[26px] w-[26px] flex-none items-center justify-center rounded-full text-[10px] font-bold"
+                    style={{ backgroundColor: 'var(--accent-soft)', color: 'var(--ink)', boxShadow: '0 0 0 2px var(--card)' }}
+                  >
                     +{overflow}
                   </span>
                 )}
