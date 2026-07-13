@@ -17,12 +17,26 @@ export interface PlanGuest {
   picture: string | null;
 }
 
+export interface PlanChange {
+  id: string;
+  field: 'time' | 'location';
+  old: string | null;
+  new: string;
+  changed_by: string;
+  created_at: string | null;
+}
+
 export interface PlanSummary {
   name: string;
   day: string;
   time: string | null;
   location: string | null;
   confirmed_names: string[];
+  // Live Plan (backend PR #125) — the group can change time/place from
+  // this page. Optional so the page renders against an older API.
+  state?: string | null;
+  details_locked?: boolean;
+  change_log?: PlanChange[];
   // Host-card redesign fields (backend PR #111) — optional so the
   // page renders fine against an older API or cached payloads.
   host?: PlanHost | null;

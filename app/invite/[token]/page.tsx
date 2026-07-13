@@ -10,6 +10,7 @@ import {
 
 import { RSVPCard } from './rsvp-card';
 import { GroupRSVPCard } from './group-rsvp-card';
+import { LivePlan } from './live-plan';
 import {
   resolveToken,
   getContactInvite,
@@ -534,10 +535,13 @@ function HostCard({
   plan,
   skin,
   children,
+  liveExtras,
 }: {
   plan: PlanSummary;
   skin: Skin;
   children: React.ReactNode;
+  /** Live Plan block (change trail + editor) — under the date/place rows. */
+  liveExtras?: React.ReactNode;
 }) {
   const host = plan.host ?? null;
   const guests = plan.guests ?? [];
@@ -615,6 +619,9 @@ function HostCard({
           {plan.location}
         </div>
       )}
+
+      {/* Live Plan: change trail + "change the time or place" */}
+      {liveExtras}
 
       {/* The RSVP flow (idle / confirmed / name entry) renders here */}
       {children}
@@ -824,12 +831,25 @@ export default async function InvitePage({
     );
   }
 
-  // Group invite — show name entry + RSVP
+  // Group invite — show name entry + RSVP + Live Plan group edits
   if (resolved.type === 'group' && resolved.plan) {
     const skin = skinFor(styleOverride ?? resolved.plan.style);
     return (
       <Scene skin={skin} photo={resolved.plan.photo} photos={resolved.plan.photos} card={resolved.plan.card} day={resolved.plan.day}>
-        <HostCard plan={resolved.plan} skin={skin}>
+        <HostCard
+          plan={resolved.plan}
+          skin={skin}
+          liveExtras={
+            <LivePlan
+              token={params.token}
+              planTime={resolved.plan.time}
+              planLocation={resolved.plan.location}
+              changes={resolved.plan.change_log ?? []}
+              locked={resolved.plan.details_locked ?? false}
+              ended={resolved.plan.state === 'ended'}
+            />
+          }
+        >
           <GroupRSVPCard
             token={params.token}
             planName={resolved.plan.name}
