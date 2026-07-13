@@ -1,7 +1,8 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { AddToCalendar } from './add-to-calendar';
+import { loadGuestName, saveGuestName, shareToThread } from './live-plan';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
 
@@ -35,8 +36,15 @@ export function GroupRSVPCard({
   const [name, setName] = useState('');
   const [confirmedStatus, setConfirmedStatus] = useState<RSVPStatus | null>(null);
 
+  // "Tap your name" continuity with the Live Plan editor — a guest who
+  // RSVP'd earlier shouldn't have to retype who they are.
+  useEffect(() => {
+    setName((n) => n || loadGuestName());
+  }, []);
+
   const handleContinue = () => {
     if (name.trim().length >= 2) {
+      saveGuestName(name);
       setStep('rsvp');
     }
   };
@@ -205,12 +213,27 @@ export function GroupRSVPCard({
           {CONFIRM_MSG[confirmedStatus]}
         </p>
         {confirmedStatus !== 'no' && (
-          <AddToCalendar
-            planName={planName}
-            day={planDay}
-            time={planTime}
-            location={planLocation}
-          />
+          <>
+            {/* The echo: their yes goes back into the thread with the
+                link, so the next friend lands on this same live page. */}
+            <button
+              onClick={() =>
+                shareToThread(
+                  `🎉 ${name.split(' ')[0] || 'I'}${name ? ' is' : "'m"} in for ${planName} — everything's here: ${window.location.href}`
+                )
+              }
+              className="mt-3 h-11 w-full rounded-xl font-bold text-[14px] active:opacity-80 transition-opacity"
+              style={{ backgroundColor: 'var(--accent, #E8A020)', color: 'var(--on-accent, #fff)' }}
+            >
+              📣 Text the group you&apos;re in
+            </button>
+            <AddToCalendar
+              planName={planName}
+              day={planDay}
+              time={planTime}
+              location={planLocation}
+            />
+          </>
         )}
       </div>
     );
