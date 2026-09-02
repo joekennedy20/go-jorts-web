@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { AddToCalendar } from './add-to-calendar';
+import { GetTheApp } from './get-the-app';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
 
@@ -13,6 +14,8 @@ interface RSVPCardProps {
   planDay: string;
   planTime: string | null;
   planLocation: string | null;
+  /** First names already confirmed — names who's waiting in the chat. */
+  guestNames?: string[];
   /** Slim variant for the card-hero tab — single-row buttons, no labels. */
   compact?: boolean;
 }
@@ -33,6 +36,7 @@ export function RSVPCard({
   planDay,
   planTime,
   planLocation,
+  guestNames,
   compact,
 }: RSVPCardProps) {
   const [state, setState] = useState<'idle' | 'submitting' | 'confirmed'>(
@@ -77,12 +81,17 @@ export function RSVPCard({
         </p>
 
         {confirmedStatus !== 'no' && (
-          <AddToCalendar
-            planName={planName}
-            day={planDay}
-            time={planTime}
-            location={planLocation}
-          />
+          <>
+            {/* The download leads: they just said yes to a real plan,
+                and everything that happens next happens in the app. */}
+            <GetTheApp token={token} guests={guestNames} />
+            <AddToCalendar
+              planName={planName}
+              day={planDay}
+              time={planTime}
+              location={planLocation}
+            />
+          </>
         )}
 
         {/* Change answer */}
