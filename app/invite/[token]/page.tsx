@@ -771,6 +771,33 @@ function CardHero({
   );
 }
 
+/**
+ * First names of the people already on this plan — the host, then
+ * whoever has said yes. Used to tell a guest who just RSVP'd exactly
+ * who is waiting on the other side of the download.
+ *
+ * Host leads because they're the reason this person is here at all.
+ * Deduped case-insensitively so a host who also appears in the guest
+ * list isn't counted twice.
+ */
+function peopleInTheChat(plan: PlanSummary): string[] {
+  const names = [
+    ...(plan.host?.name ? [plan.host.name] : []),
+    ...(plan.guests ?? []).map((g) => g.name),
+  ];
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const full of names) {
+    const first = (full ?? '').trim().split(/\s+/)[0];
+    if (!first) continue;
+    const key = first.toLowerCase();
+    if (seen.has(key)) continue;
+    seen.add(key);
+    out.push(first);
+  }
+  return out;
+}
+
 function InvalidInvite() {
   return (
     <Scene skin={DEFAULT_SKIN} day="">
@@ -825,6 +852,7 @@ export default async function InvitePage({
             planDay={invite.plan.day}
             planTime={invite.plan.time}
             planLocation={invite.plan.location}
+            guestNames={peopleInTheChat(invite.plan)}
           />
         </HostCard>
       </Scene>
@@ -856,6 +884,7 @@ export default async function InvitePage({
             planDay={resolved.plan.day}
             planTime={resolved.plan.time}
             planLocation={resolved.plan.location}
+            guestNames={peopleInTheChat(resolved.plan)}
           />
         </HostCard>
       </Scene>

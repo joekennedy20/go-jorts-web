@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { AddToCalendar } from './add-to-calendar';
+import { GetTheApp } from './get-the-app';
 import { loadGuestName, saveGuestName, shareToThread } from './live-plan';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
@@ -20,6 +21,8 @@ interface GroupRSVPCardProps {
   planDay: string;
   planTime: string | null;
   planLocation: string | null;
+  /** First names already confirmed — names who's waiting in the chat. */
+  guestNames?: string[];
   /** Slim variant for the card-hero tab — inline name row, single-row buttons. */
   compact?: boolean;
 }
@@ -30,6 +33,7 @@ export function GroupRSVPCard({
   planDay,
   planTime,
   planLocation,
+  guestNames,
   compact,
 }: GroupRSVPCardProps) {
   const [step, setStep] = useState<'name' | 'rsvp' | 'submitting' | 'confirmed'>('name');
@@ -214,16 +218,20 @@ export function GroupRSVPCard({
         </p>
         {confirmedStatus !== 'no' && (
           <>
-            {/* The echo: their yes goes back into the thread with the
-                link, so the next friend lands on this same live page. */}
+            {/* The download leads — everything that happens between now
+                and the plan happens in the app. The echo below it is
+                still the loop that brings the next friend to this page,
+                so it stays prominent, just no longer the filled button
+                competing with the one action this guest hasn't taken. */}
+            <GetTheApp token={token} guests={guestNames} />
             <button
               onClick={() =>
                 shareToThread(
                   `🎉 ${name.split(' ')[0] || 'I'}${name ? ' is' : "'m"} in for ${planName} — everything's here: ${window.location.href}`
                 )
               }
-              className="mt-3 h-11 w-full rounded-xl font-bold text-[14px] active:opacity-80 transition-opacity"
-              style={{ backgroundColor: 'var(--accent, #E8A020)', color: 'var(--on-accent, #fff)' }}
+              className="mt-2.5 h-11 w-full rounded-xl border-[1.5px] font-bold text-[14px] active:opacity-80 transition-opacity"
+              style={{ borderColor: 'var(--accent, #E8A020)', color: 'var(--accent, #E8A020)' }}
             >
               📣 Text the group you&apos;re in
             </button>
