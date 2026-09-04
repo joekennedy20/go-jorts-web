@@ -31,10 +31,21 @@
  *   - org.JortsApp is the bundle identifier (also in project.pbxproj
  *     PRODUCT_BUNDLE_IDENTIFIER).
  *
- * The /join/* path pattern matches every shareable-hang link. If we
- * add more universal-link surfaces in the future (e.g. /invite/*
- * — wait, those are already web-only RSVPs, no app handling there)
- * we'd add additional entries to the components array.
+ * Paths claimed here:
+ *
+ *   /join/*    shareable-hang links (the original surface)
+ *   /invite/*  plan invites — the links the app actually sends
+ *
+ * /invite/* was left out on the theory that those pages are "web-only
+ * RSVPs, no app handling there". That stopped being true, and the cost
+ * was that EVERY Jorts invite opened Safari — including for people who
+ * had the app, who then typed their own name into a page built for
+ * strangers, next to their own profile. The app now resolves the token
+ * and joins them (POST /v1/invites/{token}/join).
+ *
+ * /share/* is deliberately NOT claimed. Those are the sticker/share
+ * pages, meant to be looked at in a browser by anyone; hijacking them
+ * into the app would break the one thing they're for.
  */
 import { NextResponse } from 'next/server';
 
@@ -53,6 +64,10 @@ export async function GET() {
             {
               '/': '/join/*',
               comment: 'Open shareable Group Hang invites in the Jorts app',
+            },
+            {
+              '/': '/invite/*',
+              comment: 'Open plan invites in the app for people who have it',
             },
           ],
         },
