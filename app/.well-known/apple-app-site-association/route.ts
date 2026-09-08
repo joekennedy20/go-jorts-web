@@ -35,6 +35,7 @@
  *
  *   /join/*    shareable-hang links (the original surface)
  *   /invite/*  plan invites — the links the app actually sends
+ *   /map/*     invites to an invite-only campus map
  *
  * /invite/* was left out on the theory that those pages are "web-only
  * RSVPs, no app handling there". That stopped being true, and the cost
@@ -68,6 +69,15 @@ export async function GET() {
             {
               '/': '/invite/*',
               comment: 'Open plan invites in the app for people who have it',
+            },
+            {
+              // Same lesson as /invite/*, learned again: the app
+              // started sending /map/ links before this file claimed
+              // them, so every map invite opened Safari — onto a path
+              // that didn't exist yet either, which is how a steward's
+              // first invite came back a 404 (Joe, 2026-09-08).
+              '/': '/map/*',
+              comment: 'Open campus-map invites in the app',
             },
           ],
         },
