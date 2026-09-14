@@ -36,6 +36,7 @@
  *   /join/*    shareable-hang links (the original surface)
  *   /invite/*  plan invites — the links the app actually sends
  *   /map/*     invites to an invite-only campus map
+ *   /g/*       a group's reusable invite link
  *
  * /invite/* was left out on the theory that those pages are "web-only
  * RSVPs, no app handling there". That stopped being true, and the cost
@@ -78,6 +79,13 @@ export async function GET() {
               // first invite came back a 404 (Joe, 2026-09-08).
               '/': '/map/*',
               comment: 'Open campus-map invites in the app',
+            },
+            {
+              // And a third time: group links went out pointing at a
+              // domain that didn't exist, then here, before this file
+              // claimed them (Joe, 2026-09-14). The app joins the group.
+              '/': '/g/*',
+              comment: 'Open group links in the app',
             },
           ],
         },
