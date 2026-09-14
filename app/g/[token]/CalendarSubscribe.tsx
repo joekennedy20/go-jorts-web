@@ -33,6 +33,10 @@ type Platform = 'ios' | 'android' | 'desktop' | null;
 
 export function CalendarSubscribe({ groupName, url, webcalUrl, googleUrl, serif, sans }: Props) {
   const [copied, setCopied] = useState(false);
+  // A webcal:// link does nothing visible in a browser with no calendar
+  // app registered for it — Chrome on a Mac, often — so on a computer we
+  // follow the tap with how to do it by hand (Joe, 2026-09-14).
+  const [triedApple, setTriedApple] = useState(false);
   const [platform, setPlatform] = useState<Platform>(null);
 
   useEffect(() => {
@@ -71,6 +75,12 @@ export function CalendarSubscribe({ groupName, url, webcalUrl, googleUrl, serif,
     <a
       key="apple"
       href={webcalUrl}
+      onClick={() => {
+        if (platform === 'desktop') {
+          setTriedApple(true);
+          void copy();
+        }
+      }}
       style={{ ...s.button, ...(platform === 'android' ? s.secondary : s.primary), ...sans }}
     >
       <CalendarIcon /> Apple Calendar
@@ -105,6 +115,12 @@ export function CalendarSubscribe({ groupName, url, webcalUrl, googleUrl, serif,
           </button>
         </div>
 
+        {triedApple && (
+          <p style={{ ...s.hint, ...sans }}>
+            Calendar didn&apos;t open? The link is copied. In the Calendar app,
+            choose <b>File → New Calendar Subscription</b> and paste it.
+          </p>
+        )}
         {onPhone && (
           <p style={{ ...s.hint, ...sans }}>
             Using Google Calendar? Google only adds calendars from its website
