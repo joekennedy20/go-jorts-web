@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 /**
  * AddToCalendar — post-RSVP "add to calendar" button.
  *
@@ -85,7 +87,35 @@ function buildIcs({ planName, day, time, location }: AddToCalendarProps): string
   return lines.join('\r\n');
 }
 
+/** Google Calendar's "new event" page, pre-filled. Works on any computer
+ *  signed in to Google — unlike an .ics download, it visibly DOES
+ *  something. Times are floating, like the .ics: Google reads them in the
+ *  viewer's own timezone. */
+function googleUrl({ planName, day, time, location }: AddToCalendarProps): string {
+  const [y, mo, d] = day.split('-').map(Number);
+  const parsed = time ? parseTime(time) : null;
+  let dates: string;
+  if (parsed) {
+    const start = new Date(y, mo - 1, d, parsed[0], parsed[1]);
+    const end = new Date(start.getTime() + DEFAULT_DURATION_HOURS * 3600_000);
+    dates = `${icsDate(start)}/${icsDate(end)}`;
+  } else {
+    const next = new Date(y, mo - 1, d + 1);
+    dates = `${y}${pad(mo)}${pad(d)}/${next.getFullYear()}${pad(next.getMonth() + 1)}${pad(next.getDate())}`;
+  }
+  const q = new URLSearchParams({ action: 'TEMPLATE', text: planName, dates });
+  if (location) q.set('location', location);
+  if (time && !parsed) q.set('details', `Time: ${time}`);
+  return `https://calendar.google.com/calendar/render?${q.toString()}`;
+}
+
 export function AddToCalendar(props: AddToCalendarProps) {
+  // On a computer, the .ics download lands silently in Downloads, which
+  // reads as "nothing happened" (Joe, 2026-09-14). So the button opens a
+  // choice, and the download says where it went.
+  const [open, setOpen] = useState(false);
+  const [saved, setSaved] = useState(false);
+
   const download = () => {
     const blob = new Blob([buildIcs(props)], { type: 'text/calendar;charset=utf-8' });
     const url = URL.createObjectURL(blob);
@@ -97,12 +127,30 @@ export function AddToCalendar(props: AddToCalendarProps) {
     a.remove();
     // Give the browser a beat to start the download before revoking.
     setTimeout(() => URL.revokeObjectURL(url), 10_000);
+    // iPhone opens the Calendar sheet itself; everywhere else, say where
+    // the file went.
+    if (!/iPhone|iPad|iPod/i.test(navigator.userAgent)) setSaved(true);
+  };
+
+  const option: React.CSSProperties = {
+    display: 'block',
+    width: '100%',
+    textAlign: 'left',
+    padding: '11px 14px',
+    borderRadius: 10,
+    fontSize: 15,
+    fontWeight: 700,
+    color: 'var(--ink, rgba(255,255,255,0.85))',
+    background: 'rgba(127,127,127,0.12)',
+    textDecoration: 'none',
   };
 
   return (
+    <div className="mt-5">
     <button
-      onClick={download}
-      className="mt-5 flex items-center gap-2 text-[15px] font-bold active:opacity-70 transition-opacity"
+      onClick={() => setOpen((v) => !v)}
+      aria-expanded={open}
+      className="flex items-center gap-2 text-[15px] font-bold active:opacity-70 transition-opacity"
       style={{ color: 'var(--ink, rgba(255,255,255,0.8))' }}
     >
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -115,5 +163,21 @@ export function AddToCalendar(props: AddToCalendarProps) {
       </svg>
       add to calendar
     </button>
+    {open ? (
+      <div style={{ marginTop: 10, display: 'grid', gap: 8, maxWidth: 320 }}>
+        <button type="button" onClick={download} style={option}>
+          Apple Calendar / Outlook
+        </button>
+        <a href={googleUrl(props)} target="_blank" rel="noopener noreferrer" style={option}>
+          Google Calendar
+        </a>
+        {saved ? (
+          <p style={{ margin: '2px 2px 0', fontSize: 13, lineHeight: 1.45, color: 'var(--ink, rgba(255,255,255,0.7))', opacity: 0.8 }}>
+            Saved <b>jorts-invite.ics</b> to your Downloads — open it to add the plan to your calendar.
+          </p>
+        ) : null}
+      </div>
+    ) : null}
+    </div>
   );
 }
