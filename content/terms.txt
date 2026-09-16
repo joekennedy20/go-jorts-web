@@ -1,0 +1,241 @@
+Jorts Terms of Use
+
+Effective Date: May 18, 2026
+Last Updated: September 16, 2026
+
+1. Acceptance of Terms
+
+These Terms of Use ("Terms") constitute a legally binding agreement between you ("you" or "user") and If You Know You Know, Inc. ("Company," "we," "us," or "our") governing your access to and use of:
+
+• The Jorts mobile application (the "App"); and
+• The website located at jortsapp.com and the pages served at go-jorts-web.vercel.app (together, the "Site"), including the public shareable-hang invite preview at jortsapp.com/join/<token>
+
+(collectively, the "Services").
+
+By downloading, installing, or using the App, or by accessing or using the Site, you represent that you have read, understood, and agree to be bound by these Terms. If you do not agree, do not use the Services.
+
+2. Apple App Store — Additional Terms
+
+The following provisions apply specifically to your use of the App obtained through the Apple App Store and are required by Apple, Inc. ("Apple"):
+
+a. Acknowledgment. You acknowledge that these Terms are an agreement between you and the Company only, and not with Apple. Apple is not responsible for the App or its content.
+
+b. Scope of License. The Company grants you a limited, non-exclusive, non-transferable, revocable license to use the App on any Apple-branded device that you own or control, as permitted by the App Store Review Guidelines and these Terms. You may not use the App on any device that you do not own or control, and you may not distribute or make the App available over a network where it could be used by multiple devices at the same time.
+
+c. Maintenance and Support. The Company is solely responsible for providing maintenance and support services with respect to the App. Apple has no obligation whatsoever to furnish any maintenance or support services with respect to the App.
+
+d. Warranty. To the maximum extent permitted by applicable law, Apple has no warranty obligation whatsoever with respect to the App. Any claims, losses, liabilities, damages, costs, or expenses attributable to any failure to conform to any warranty are the sole responsibility of the Company.
+
+e. Product Claims. The Company, not Apple, is responsible for addressing any claims by you or any third party relating to the App or your possession and/or use of the App, including but not limited to: (i) product liability claims; (ii) any claim that the App fails to conform to any applicable legal or regulatory requirement; and (iii) claims arising under consumer protection, privacy, or similar legislation.
+
+f. Intellectual Property. In the event of any third-party claim that the App or your possession and use of the App infringes a third party's intellectual property rights, the Company, not Apple, will be solely responsible for the investigation, defense, settlement, and discharge of any such claim.
+
+g. Legal Compliance. You represent and warrant that: (i) you are not located in a country that is subject to a U.S. Government embargo, or that has been designated by the U.S. Government as a "terrorist supporting" country; and (ii) you are not listed on any U.S. Government list of prohibited or restricted parties.
+
+h. Third-Party Beneficiary. The parties acknowledge and agree that Apple and Apple's subsidiaries are third-party beneficiaries of these Terms as they relate to your license of the App, and that upon your acceptance of these Terms, Apple will have the right (and will be deemed to have accepted the right) to enforce these Terms against you as a third-party beneficiary thereof.
+
+i. Developer Contact. If you have questions, complaints, or claims with respect to the App, please contact us at legal@jortsapp.com.
+
+3. Eligibility
+
+You must be at least 13 years of age to use the Services. By using the Services, you represent that you are 13 or older. If you are between the ages of 13 and 17 (or the age of majority in your jurisdiction, if higher), you represent that your parent or legal guardian has reviewed and agrees to these Terms on your behalf. We do not knowingly permit anyone under 13 to create an account or use the Services.
+
+4. Account Registration
+
+To access core features of the App, you must create an account by signing in with a supported third-party authentication provider (currently Google or Apple). When registering, you agree to:
+
+• Use accurate identity information returned by your sign-in provider, and maintain and promptly update profile information you choose to add (display name, profile photo, Instagram handle)
+• Keep your sign-in provider account secure and not share access credentials with others
+• Notify us at legal@jortsapp.com if you suspect unauthorized use of your account
+• Accept responsibility for all activity that occurs under your account
+
+You may also visit certain pages on jortsapp.com (such as the shareable-hang invite preview at jortsapp.com/join/<token>) without creating an account. Those pages display limited information about a Group Hang to anyone with the link.
+
+We reserve the right to suspend or terminate accounts that contain inaccurate information or that we determine, in our sole discretion, have been compromised or misused.
+
+5. Description of the Services
+
+Jorts is a friend-group coordination application that allows users to:
+
+• Create and join real-time Group Hangs
+• Share live location with hang participants on the in-hang map (optional, user-controlled)
+• Optionally share your current "vibe" and approximate location with mutual friends via the "Share my location with friends" toggle (a 4-hour foreground broadcast that auto-expires)
+• Express your current vibe via emoji status
+• Share outfit photos via the Fit Check feature
+• Communicate via in-hang chat
+• Signal "Heading Home" and confirm "Home Safe" through the safety flow
+• Maintain a profile with a display name, profile picture, photo grid, and optional Instagram handle that friends can tap to open Instagram
+• Connect with friends through the in-app friend system
+• Create and join social plans for the day
+• Receive push notifications related to your hangs, friend activity, and safety confirmations, plus periodic product-moment prompts (a 7 PM "what's the move tonight?" prompt and a 9 AM morning-after recap prompt)
+• Generate and share a shareable hang invite link (jortsapp.com/join/<token>) that anyone with the link can use to join the hang from either the App or the website, and revoke or replace that link at any time
+• Share a Group Hang invite card to Instagram Story or Snap Story via your device's native sharing
+• Receive admin announcements (community events, platform updates) on the home feed
+
+Features and functionality are subject to change at any time at our discretion.
+
+6. Licenses
+
+A. License to You
+
+Subject to these Terms, the Company grants you a personal, non-exclusive, non-transferable, revocable, limited license to download, install, and use the App on a compatible device you own or control, and to access and use the Site, solely for your personal, non-commercial purposes.
+
+B. License You Grant to Us
+
+By submitting, posting, or transmitting any content through the Services — including profile information, chat messages, Fit Check photos, vibe status, shareable invite links, or any other user-generated content ("User Content") — you grant the Company a worldwide, non-exclusive, royalty-free, sublicensable license to use, reproduce, process, transmit, display, and distribute that content solely to the extent necessary to operate, improve, and provide the Services. This includes rendering the public web preview at jortsapp.com/join/<token> for hangs whose host has enabled a shareable invite link.
+
+This license does not grant us the right to sell your User Content or use it for advertising purposes.
+
+You represent and warrant that you have all rights necessary to grant us this license, and that your User Content does not infringe the rights of any third party.
+
+7. User Conduct and Community Guidelines
+
+You agree to use the Services only for lawful purposes and in accordance with these Terms. When you first sign up, you are required to affirmatively agree to our community guidelines, which include the commitments below. By continuing to use the Services, you reaffirm those commitments.
+
+You agree NOT to:
+
+• Use the Services for any illegal purpose or in violation of any applicable law or regulation
+• Harass, bully, stalk, threaten, intimidate, or harm any other user
+• Impersonate any person or entity or misrepresent your affiliation with any person or entity, including by setting an Instagram handle that is not yours
+• Post or transmit any content that is unlawful, obscene, defamatory, abusive, threatening, harmful, or otherwise objectionable
+• Share personal information about other users without their consent
+• Use the live location feature or "Share my location with friends" feature to track, monitor, or surveil any person without their knowledge and consent
+• Distribute a shareable hang invite link in a manner intended to invite people the host has not consented to having in their hang
+• Attempt to gain unauthorized access to any part of the Services or any systems or networks connected to the Services
+• Interfere with or disrupt the integrity or performance of the Services
+• Reverse engineer, decompile, disassemble, or otherwise attempt to derive the source code of the App
+• Use any robot, spider, scraper, or other automated means to access the Services for any purpose
+• Remove or alter any proprietary notices, labels, or marks on the Services
+• Use the Services to send unsolicited communications or spam
+
+You also agree to report behavior that crosses these lines using in-app reporting tools or by contacting us at legal@jortsapp.com.
+
+We reserve the right to remove any User Content and to suspend or terminate the account of any user who violates these Terms or whose conduct we determine, in our sole discretion, is harmful to other users or to the Services.
+
+8. Location Sharing
+
+The App offers location-based features in two contexts:
+
+• In an active Group Hang — when location sharing is enabled, your precise location is visible in real time to other participants in the hang.
+• "Share my location with friends" (Out & About) — when enabled, your approximate location and current vibe are visible to your mutual friends for a foreground-only 4-hour window, after which the broadcast automatically ends.
+
+By enabling either location feature, you acknowledge and agree that:
+
+• You are voluntarily and knowingly sharing your location with the audience defined by the feature
+• You may disable location sharing at any time from Profile → Privacy → Share my location with friends, from the Group Hang screen, or by revoking location permission in your device's privacy settings (Settings → Privacy & Security → Location Services on iOS)
+• The Company is not responsible for any consequences arising from your choice to share or not share your location
+
+Using location features to monitor a person without their knowledge and consent is prohibited and may violate applicable law.
+
+9. Shareable Hang Invite Links
+
+If you are the host of a Group Hang, you may enable a shareable invite link from the in-hang invite menu. When enabled, the link is a Universal Link to jortsapp.com/join/<token> that:
+
+• Auto-opens the App and joins the hang for any user with Jorts installed who taps the link
+• Opens a public web preview at jortsapp.com/join/<token> for any user without the App, showing the hang name, your first name, your profile picture, the going count, and the expiry time
+
+You can disable, revoke, and re-issue the shareable invite link at any time from the same menu. Disabling the link immediately stops it from working; re-enabling it issues a fresh token and the previous link cannot be re-activated.
+
+By enabling a shareable invite link, you acknowledge and agree that:
+
+• You are voluntarily publishing limited information about the hang (name, your first name, your profile picture, going count, expiry) to anyone who possesses the link
+• Anyone you give the link to can pass it to other people, and the App has no way to prevent that
+• You are responsible for who you give the link to, and for the consequences of any forwarding
+
+If at any point you want the hang to be private again, disable the shareable invite link.
+
+10. User Content and Safety
+
+You are solely responsible for any content you submit, post, share, or transmit through the Services. The Company does not pre-screen User Content but reserves the right (though not the obligation) to monitor, review, edit, or remove any User Content at its sole discretion, at any time and for any reason, including content that violates these Terms.
+
+The Company does not endorse any User Content or any opinion, recommendation, or advice expressed therein. Views expressed by users are their own.
+
+11. Intellectual Property
+
+All content, features, and functionality of the Services — including but not limited to the Jorts name and brand, logos, software, design elements, and text — are the exclusive property of If You Know You Know, Inc. or its licensors, and are protected by United States and international copyright, trademark, and other intellectual property laws.
+
+These Terms do not grant you any right, title, or interest in or to the Services or any Company intellectual property. Any unauthorized use, reproduction, or distribution of Company intellectual property is strictly prohibited.
+
+12. Third-Party Services and Links
+
+The Services integrate with or rely upon third-party services and platforms, including (without limitation): Apple's App Store, Sign in with Apple, Google Sign-In, Google Maps, Firebase Cloud Messaging, Google Cloud Run, Google Cloud Storage, Google Cloud Scheduler, Google Cloud Logging / Monitoring / Trace, MongoDB Atlas, Neo4j Aura, Vercel, and Airbridge. The Services also offer outbound integrations to Instagram and Snapchat (via your device's native sharing) so you can share a Group Hang invite card to Instagram Story or Snap Story. These third-party services are governed by their own terms and privacy policies, and the Company is not responsible for their content, practices, or policies. Your use of third-party services is at your own risk.
+
+13. Privacy
+
+Your use of the Services is subject to our Privacy Policy, which is incorporated into these Terms by this reference. By using the Services, you consent to the data practices described in the Privacy Policy. The Privacy Policy is available at https://jortsapp.com/privacy.html.
+
+14. Disclaimer of Warranties
+
+THE SERVICES ARE PROVIDED ON AN "AS IS" AND "AS AVAILABLE" BASIS, WITHOUT WARRANTIES OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. THE COMPANY DOES NOT WARRANT THAT THE SERVICES WILL BE UNINTERRUPTED, ERROR-FREE, SECURE, OR FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS, OR THAT DEFECTS WILL BE CORRECTED.
+
+TO THE EXTENT PERMITTED BY APPLICABLE LAW, THE COMPANY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, WITH RESPECT TO THE SERVICES.
+
+15. Limitation of Liability
+
+TO THE MAXIMUM EXTENT PERMITTED BY APPLICABLE LAW, IN NO EVENT SHALL IF YOU KNOW YOU KNOW, INC., ITS OFFICERS, DIRECTORS, EMPLOYEES, AGENTS, OR LICENSORS BE LIABLE FOR ANY INDIRECT, INCIDENTAL, SPECIAL, CONSEQUENTIAL, PUNITIVE, OR EXEMPLARY DAMAGES — INCLUDING BUT NOT LIMITED TO LOSS OF PROFITS, LOSS OF DATA, LOSS OF GOODWILL, OR SERVICE INTERRUPTION — ARISING OUT OF OR RELATED TO YOUR USE OF OR INABILITY TO USE THE SERVICES, EVEN IF THE COMPANY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES.
+
+IN NO EVENT SHALL THE COMPANY'S TOTAL CUMULATIVE LIABILITY TO YOU FOR ALL CLAIMS ARISING OUT OF OR RELATED TO THESE TERMS OR THE SERVICES EXCEED THE GREATER OF: (A) THE AMOUNT YOU PAID TO THE COMPANY IN THE TWELVE (12) MONTHS PRECEDING THE CLAIM, OR (B) $100.
+
+Some jurisdictions do not allow the exclusion of certain warranties or the limitation of certain damages, so some of the above exclusions or limitations may not apply to you.
+
+16. Indemnification
+
+You agree to indemnify, defend, and hold harmless If You Know You Know, Inc. and its officers, directors, employees, and agents from and against any claims, liabilities, damages, losses, and expenses (including reasonable attorneys' fees) arising out of or related to: (a) your use of or inability to use the Services; (b) your User Content; (c) your violation of these Terms; (d) your violation of any rights of another person or entity; or (e) your violation of any applicable law or regulation.
+
+17. Termination
+
+A. Termination by You
+
+You may stop using the Services at any time. You may permanently delete your account and associated personal data from within the App at Profile → Delete Account, or by contacting us at legal@jortsapp.com. Deletion will remove your profile, friend connections, messages, photos, shareable invite tokens, and other personal data in accordance with our Privacy Policy. Some data may be retained where required by law or for security and fraud prevention purposes.
+
+B. Termination by Us
+
+The Company may suspend or terminate your access to the Services, in whole or in part, at any time and for any reason, with or without notice, including if we believe you have violated these Terms. Upon termination, your license to use the App is immediately revoked.
+
+C. Effect of Termination
+
+Sections 6(B), 7, 9, 11, 13, 14, 15, 16, 18, 19, and 20 of these Terms shall survive any termination.
+
+18. Governing Law and Jurisdiction
+
+These Terms and any dispute arising out of or related to them or the Services shall be governed by the laws of the State of North Carolina, without regard to its conflict of laws provisions. You agree that any legal action or proceeding arising under these Terms shall be brought exclusively in the state or federal courts located in Mecklenburg County, North Carolina, and you irrevocably consent to the personal jurisdiction and venue of such courts.
+
+19. Dispute Resolution; Arbitration
+
+Please read this section carefully. It affects your rights.
+
+A. Informal Resolution. Before initiating any formal legal proceeding, you agree to first contact us at legal@jortsapp.com and give us 30 days to attempt to resolve the dispute informally.
+
+B. Binding Arbitration. If the dispute is not resolved informally, you and the Company agree that any dispute, claim, or controversy arising out of or relating to these Terms or the Services — except for claims for injunctive or other equitable relief — shall be resolved by binding individual arbitration administered by the American Arbitration Association ("AAA") under its Consumer Arbitration Rules, rather than in court. The arbitration shall be conducted in Mecklenburg County, North Carolina, or remotely if permitted by the AAA rules.
+
+C. Class Action Waiver. You and the Company each agree that any claims must be brought in the respective party's individual capacity, and not as a plaintiff or class member in any purported class or representative proceeding. The arbitrator may not consolidate claims or preside over any form of a representative or class proceeding.
+
+D. Exceptions. Either party may seek injunctive or other equitable relief in a court of competent jurisdiction to prevent actual or threatened infringement, misappropriation, or violation of intellectual property rights. Small claims court actions may also be brought individually in your local small claims court.
+
+20. General Provisions
+
+A. Entire Agreement. These Terms, together with the Privacy Policy and any additional terms for specific features, constitute the entire agreement between you and the Company with respect to the Services and supersede all prior agreements.
+
+B. Severability. If any provision of these Terms is found to be unenforceable, that provision shall be modified to the minimum extent necessary to make it enforceable, and the remaining provisions shall remain in full force and effect.
+
+C. Waiver. The Company's failure to enforce any right or provision of these Terms shall not constitute a waiver of that right or provision.
+
+D. Assignment. You may not assign or transfer your rights or obligations under these Terms without our prior written consent. We may freely assign these Terms without restriction.
+
+E. No Third-Party Beneficiaries. Except as expressly stated in Section 2(h) with respect to Apple, these Terms do not create any third-party beneficiary rights.
+
+F. Notices. We may deliver notices to you through the App, by email to the address associated with your account, or by posting on the Site. You may deliver notices to us at legal@jortsapp.com.
+
+21. Changes to These Terms
+
+We may update these Terms from time to time. When we do, we will revise the "Last Updated" date at the top of this document. For material changes, we will provide notice through the App or by other reasonable means prior to the change taking effect. Your continued use of the Services after the effective date of any changes constitutes your acceptance of the revised Terms. If you do not agree to the revised Terms, you must stop using the Services.
+
+22. Contact Us
+
+If you have questions or concerns about these Terms, please contact us:
+
+If You Know You Know, Inc.
+Charlotte, North Carolina
+Email: legal@jortsapp.com
+
+These Terms of Use govern both the Jorts mobile application and the jortsapp.com website. The Terms of Use are available at https://jortsapp.com/terms.html. For information about how we collect and use your data, please see our Privacy Policy at https://jortsapp.com/privacy.html.
