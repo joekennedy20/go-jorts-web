@@ -37,6 +37,7 @@
  *   /invite/*  plan invites — the links the app actually sends
  *   /map/*     invites to an invite-only campus map
  *   /g/*       a group's reusable invite link
+ *   /p/*       a plan, from the link in someone's own calendar
  *
  * /invite/* was left out on the theory that those pages are "web-only
  * RSVPs, no app handling there". That stopped being true, and the cost
@@ -86,6 +87,13 @@ export async function GET() {
               // claimed them (Joe, 2026-09-14). The app joins the group.
               '/': '/g/*',
               comment: 'Open group links in the app',
+            },
+            {
+              // Claimed from day one this time: the "See who's on the
+              // way" link on each plan in someone's own calendar
+              // subscription. The app opens the plan (Joe, 2026-09-22).
+              '/': '/p/*',
+              comment: 'Open a plan from a calendar link',
             },
           ],
         },

@@ -1,7 +1,7 @@
 Jorts App Privacy Policy
 
 Effective Date: June 3, 2026
-Last Updated: September 16, 2026
+Last Updated: September 22, 2026
 
 1. Introduction
 
@@ -87,11 +87,15 @@ We do not use device identifiers for cross-app tracking or advertising profiles.
 
 H. Calendar Information
 
-With your permission, and only for the calendars you select, the App reads events from the calendars already on your device (which may include iCloud, Google, or Outlook/Exchange accounts you have added in iOS Settings). The App reads only the start and end time of each event. Event titles, locations, notes, attendees, and organizers are never read out of the device's calendar store and never leave your device.
+With your permission, the App reads events from the calendars already on your device (which may include iCloud, Google, or Outlook/Exchange accounts you have added in iOS Settings). It does this for two things.
 
-From those times, the App sends us busy windows — a date, a start time, and a length. We store nothing else about the event. Your groups see those windows as anonymous busy time on the shared calendar: they can see that you are taken, never what you are doing.
+Busy time. For the calendars you select, the App reads only the start and end time of each event. From those times, the App sends us busy windows — a date, a start time, and a length. We store nothing else about the event. Your groups see those windows as anonymous busy time on the shared calendar: they can see that you are taken, never what you are doing.
 
 All-day events, events you have marked "free," cancelled events, and invitations you have declined do not create busy windows.
+
+Plans from your calendar. To offer to turn an upcoming event into a Jorts plan, the App reads the title, time, and location of your upcoming evening and weekend events on your device. This happens only on your phone: nothing about these events is sent to us unless you choose one to make into a plan, and then only what you keep in the plan (its name, day, time, and place) is sent, as it would be for any plan you make. Attendees, notes, and organizers are never read.
+
+Your plans in your calendar. If you subscribe to your Jorts calendar, your calendar app fetches your plans from us through a private link. Anyone with that link can see those plans, so you can reset the link at any time in the App, which stops the old one.
 
 Calendar sharing is user-controlled and off until you turn it on. You can turn it off at any time from the calendar screen, which deletes every busy window you have shared, or by revoking calendar permission in iOS Settings. If your device stops syncing for 21 days, the windows you shared stop being shown.
 
@@ -186,6 +190,7 @@ Shareable invite token + hang preview metadata | Yes | App functionality
 IP address | Yes | Security, fraud prevention, diagnostics
 FCM device token | Yes | Push notifications
 Calendar busy windows (day, start time, length — no event details) | Yes | App functionality (shared calendar)
+Private link to your own plans calendar | Yes | App functionality (calendar subscription)
 Calendar look (cover photo, background photo, color, emoji, status line, usual free nights) | Yes | App functionality
 Airbridge device install identifier | Yes | Deep-link attribution
 Crash logs / diagnostics | No | App improvement
@@ -204,6 +209,7 @@ Shareable invite tokens | Retained while the hang is active and shareable; clear
 Photos (profile, Fit Check) | Retained in Google Cloud Storage until you delete them, delete the parent record, or delete your account
 Live location pings | Not persisted as a log — the most-recent location is overwritten as new pings arrive; cleared when sharing is turned off
 Calendar busy windows | Replaced in full on each sync; deleted when you turn calendar sharing off or delete your account; no longer shown to anyone if your device has not synced for 21 days
+Private link to your own plans calendar | Retained until you reset it or delete your account
 Calendar look | Retained until you change it or delete your account
 IP addresses in logs | Up to 30 days (Google Cloud Logging default retention)
 Authentication tokens | Access tokens expire after 30 days; refresh tokens valid for 30 days from issuance
