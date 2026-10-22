@@ -66,7 +66,10 @@ export async function generateMetadata({
       type: 'website',
     },
     twitter: {
-      card: 'summary',
+      // Not 'summary' — that is the small square thumbnail, which is
+      // the grey-row problem the card exists to solve. The card is
+      // 1200x630; say so, or clients crop it into a chip.
+      card: 'summary_large_image',
       title,
       description,
     },

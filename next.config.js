@@ -12,6 +12,16 @@
 // — that way `jortsapp.com/share/foo` and `go-jorts-web.vercel.app/share/foo`
 // continue to work via the literal route on disk.
 const nextConfig = {
+  experimental: {
+    // The invite card's OG image reads its two .ttf files off disk at
+    // request time (see app/invite/[token]/opengraph-image.tsx for why
+    // it isn't the documented `import.meta.url` fetch). Nothing
+    // IMPORTS them, so the tracer would leave them out of the
+    // deployed function and every render would throw ENOENT.
+    outputFileTracingIncludes: {
+      '/invite/[token]/opengraph-image': ['./app/invite/[token]/fonts/*.ttf'],
+    },
+  },
   async rewrites() {
     return {
       beforeFiles: [
