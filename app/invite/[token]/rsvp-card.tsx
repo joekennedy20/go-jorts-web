@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { AddToCalendar } from './add-to-calendar';
 import { GetTheApp } from './get-the-app';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
+import { API_URL } from '@/app/api-url';
 
 interface RSVPCardProps {
   token: string;

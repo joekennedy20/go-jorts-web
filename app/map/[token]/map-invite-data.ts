@@ -9,7 +9,7 @@
  * previews unprompted, and a link that died to a preview would be
  * unexplainable to the person who sent it.
  */
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
+import { API_URL } from '@/app/api-url';
 
 export interface MapInvite {
   map_name: string | null;

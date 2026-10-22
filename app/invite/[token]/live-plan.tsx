@@ -15,7 +15,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import type { PlanChange } from './invite-data';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
+import { API_URL } from '@/app/api-url';
 
 /** Shared with the RSVP card so "tap your name" works across both. */
 export const GUEST_NAME_KEY = 'jorts_guest_name';

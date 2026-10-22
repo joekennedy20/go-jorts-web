@@ -13,7 +13,9 @@
  *     so this page still works as a plain landing page against an API
  *     that doesn't serve the plans read yet.
  */
-export const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
+import { API_URL } from '@/app/api-url';
+
+export { API_URL };
 
 export interface GroupLinkPreview {
   group_name: string;
