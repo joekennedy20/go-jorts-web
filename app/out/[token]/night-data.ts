@@ -4,8 +4,9 @@
  * its Open Graph metadata, and the generated preview image.
  */
 
-export const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
+import { API_URL } from '@/app/api-url';
+
+export { API_URL };
 
 export interface NightPage {
   first_name: string;

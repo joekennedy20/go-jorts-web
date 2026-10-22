@@ -4,8 +4,9 @@
  * so the fetch + formatting helpers live here once.
  */
 
-export const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
+import { API_URL } from '@/app/api-url';
+
+export { API_URL };
 
 export interface PlanHost {
   name: string;

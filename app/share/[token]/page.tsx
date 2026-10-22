@@ -15,8 +15,7 @@
 import { Metadata } from 'next';
 import { LiveShareViewer } from './live-share-viewer';
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
+import { API_URL } from '@/app/api-url';
 
 interface SharePublicResponse {
   status: 'active' | 'expired' | 'revoked';

@@ -11,7 +11,7 @@
  * gets the API's empty "turned off" calendar passed straight through.
  */
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
+import { API_URL } from '@/app/api-url';
 
 export const dynamic = 'force-dynamic';
 

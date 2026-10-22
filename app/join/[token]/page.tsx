@@ -20,7 +20,7 @@
  */
 import type { Metadata } from 'next';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
+import { API_URL } from '@/app/api-url';
 const APP_STORE_URL = 'https://apps.apple.com/app/id6759267210';
 const APP_STORE_ID = '6759267210';
 

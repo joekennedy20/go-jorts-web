@@ -24,8 +24,7 @@ import {
   useMap,
 } from '@vis.gl/react-google-maps';
 
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
+import { API_URL } from '@/app/api-url';
 const MAPS_KEY =
   process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || '';
 

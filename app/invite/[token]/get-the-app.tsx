@@ -18,7 +18,7 @@
  * attributable without deferred deep linking.
  */
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.getjorts.com';
+import { API_URL } from '@/app/api-url';
 const APP_STORE_URL = 'https://apps.apple.com/app/id6759267210';
 
 interface GetTheAppProps {
