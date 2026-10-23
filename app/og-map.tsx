@@ -1,67 +1,94 @@
 /**
- * The map under a link preview — drawn, not fetched.
+ * The map across the top of a link preview — drawn, not fetched.
  *
- * This started as a real Google Static Map of the venue, which
- * needed the plan's coordinates on a public payload, an API enabled
- * on the billing account, a timeout, a cache and a failure path. It
- * answered the wrong question. The card is not trying to show you
- * where the bar is; the page one tap away does that, with a real
- * map. It is trying to say there is a map here with your friends on
- * it and you cannot see it from out there (Joe, 2026-10-23: "all we
- * are trying to do is hint at the fact that you can't see the map
- * if you don't have jorts").
+ * It is NOT the venue. It is deliberately nowhere: a real map of
+ * the actual street would put a city somebody doesn't recognise on
+ * the card and read as a mistake (Joe, 2026-10-23: "fade the map -
+ * it would be confusing to have a different city"). What it says
+ * is that there is a map here with people on it and you cannot see
+ * them from out there.
  *
- * A picture of somebody's actual street says "here is a bar". Pins
- * with nobody named on them says "there are people on this, and you
- * are not looking at them yet". The second one is the product.
+ * Plain divs, which Satori renders natively — no asset to ship, no
+ * SVG support to gamble on, no network call that can fail inside
+ * ImageResponse and take the whole card with it, and nothing to pay
+ * per render. It began as a real Google Static Map and that cost
+ * coordinates on a public payload, an API on the billing account, a
+ * key, a timeout, a cache and a failure path.
  *
- * So: plain divs. Satori renders them natively, which means no
- * asset to ship, no SVG support to gamble on, no network call that
- * can fail inside ImageResponse and take the whole card with it,
- * and nothing to pay. It is also themeable — the colours come from
- * the same two constants as everything else.
- *
- * Everything lives in the RIGHT half. The plan's name, time and
- * place occupy the left, and the card had a dead third on the end
- * of it; the cluster fills that instead of sitting under the words.
+ * Faded on purpose, and only ever a band at the top: the plan's own
+ * words are the hero and this is the texture behind them.
  */
-import { GOLD, NAVY } from '@/app/og-fonts';
-
 const W = 1200;
-const H = 630;
 
-/** Irregular on purpose. An even grid reads as graph paper. */
-const AVENUES = [52, 178, 300, 468, 596, 724, 884, 1016, 1142];
-const STREETS = [64, 158, 252, 348, 442, 548];
+/** Pale, warm, and low contrast — a map you register rather than read. */
+const GROUND = '#E5E8E2';
+const ROAD = '#FFFFFF';
+const BLOCK = '#F1F2EE';
+const BLOCK_ALT = '#ECEEE9';
+const PARK = '#DBE7D4';
+const WATER = '#D2E1EE';
 
-/** Blocks, a touch lighter than the ground they sit on. */
+/** Irregular on purpose, and several of them stop. An even grid of
+ *  full-width lines reads as a spreadsheet, which is exactly what
+ *  the first version of this looked like. */
+const AVENUES = [
+  { x: 86, y: 0, h: 1 },
+  { x: 203, y: 0, h: 0.62 },
+  { x: 331, y: 0, h: 1 },
+  { x: 418, y: 0.38, h: 0.62 },
+  { x: 520, y: 0, h: 1 },
+  { x: 648, y: 0, h: 0.46 },
+  { x: 735, y: 0, h: 1 },
+  { x: 869, y: 0.3, h: 0.7 },
+  { x: 958, y: 0, h: 1 },
+  { x: 1086, y: 0, h: 0.54 },
+];
+const STREETS = [
+  { y: 58, x: 0, w: 1 },
+  { y: 141, x: 0.17, w: 0.83 },
+  { y: 214, x: 0, w: 1 },
+  { y: 262, x: 0, w: 0.58 },
+];
+
+/** Blocks, in a handful of sizes. Same size everywhere is the other
+ *  half of what made it look like a table. */
 const BLOCKS = [
-  { x: 596, y: 158, w: 128, h: 94 },
-  { x: 884, y: 252, w: 132, h: 96 },
-  { x: 724, y: 442, w: 160, h: 106 },
-  { x: 1016, y: 64, w: 126, h: 94 },
+  { x: 203, y: 58, w: 128, h: 83, t: 0 },
+  { x: 520, y: 141, w: 128, h: 73, t: 1 },
+  { x: 735, y: 58, w: 134, h: 83, t: 0 },
+  { x: 331, y: 214, w: 189, h: 48, t: 1 },
+  { x: 958, y: 141, w: 128, h: 73, t: 0 },
+  { x: 86, y: 141, w: 117, h: 73, t: 1 },
 ];
 
-/** The cluster. No names, no faces — the point is that you can't
- *  see who they are. The big one is the plan itself. */
-const PINS = [
-  { x: 836, y: 214, r: 11 },
-  { x: 988, y: 162, r: 10 },
-  { x: 1074, y: 302, r: 10 },
-  { x: 790, y: 388, r: 10 },
-];
-const HERE = { x: 912, y: 318, r: 17 };
-
-const INK = 'rgba(255,255,255,';
-
-/** Empty on purpose — a preview that quoted real chat would be a
- *  leak, and a blank shape is the better tease anyway. */
-const BUBBLES = [
-  { x: 1004, y: 190, w: 94, h: 32, ink: '0.11' },
-  { x: 846, y: 436, w: 68, h: 28, ink: '0.085' },
+/** A park, as a few overlapping rectangles rather than one stripe —
+ *  a full-height band of green is a column, not a park. */
+const GREEN = [
+  { x: 0, y: 0, w: 203, h: 58 },
+  { x: 0, y: 58, w: 86, h: 83 },
+  { x: 86, y: 0, w: 117, h: 141 },
+  { x: 331, y: 0, w: 87, h: 58 },
 ];
 
-export function ogMap() {
+/** Water, stepped, for the same reason. */
+const BLUE = [
+  { x: 1086, y: 0, w: 114, h: 141 },
+  { x: 1004, y: 141, w: 196, h: 73 },
+  { x: 1086, y: 214, w: 114, h: 74 },
+];
+
+/** The places a night moves between. No labels and no names — the
+ *  point is that you can't read them from out here. */
+const PLACES = [
+  { x: 430, y: 152, c: '#F08A3C', halo: 'rgba(240,138,60,0.26)', r: 25 },
+  { x: 742, y: 100, c: '#8B5CF6', halo: 'rgba(139,92,246,0.24)', r: 23 },
+  { x: 946, y: 196, c: '#39434D', halo: 'rgba(57,67,77,0.18)', r: 21 },
+];
+/** You, where the blue dot always is. */
+const HERE = { x: 600, y: 186, c: '#2E7DF6' };
+
+export function ogMap(height: number) {
+  const vh = (f: number) => Math.round(height * f);
   return (
     <div
       style={{
@@ -69,33 +96,36 @@ export function ogMap() {
         top: 0,
         left: 0,
         width: W,
-        height: H,
+        height,
         display: 'flex',
+        backgroundColor: GROUND,
       }}
     >
-      {AVENUES.map(x => (
+      {GREEN.map(g => (
         <div
-          key={`a${x}`}
+          key={`g${g.x}-${g.y}`}
           style={{
             position: 'absolute',
-            left: x,
-            top: 0,
-            width: 2,
-            height: H,
-            backgroundColor: `${INK}0.075)`,
+            left: g.x,
+            top: g.y,
+            width: g.w,
+            height: g.h,
+            backgroundColor: PARK,
+            display: 'flex',
           }}
         />
       ))}
-      {STREETS.map(y => (
+      {BLUE.map(b => (
         <div
-          key={`s${y}`}
+          key={`w${b.x}-${b.y}`}
           style={{
             position: 'absolute',
-            left: 0,
-            top: y,
-            width: W,
-            height: 2,
-            backgroundColor: `${INK}0.075)`,
+            left: b.x,
+            top: b.y,
+            width: b.w,
+            height: b.h,
+            backgroundColor: WATER,
+            display: 'flex',
           }}
         />
       ))}
@@ -108,127 +138,112 @@ export function ogMap() {
             top: b.y,
             width: b.w,
             height: b.h,
-            backgroundColor: `${INK}0.03)`,
+            backgroundColor: b.t ? BLOCK : BLOCK_ALT,
+            display: 'flex',
           }}
         />
       ))}
-
-      {/* A faint route along the streets, from the far pin in to the
-          plan. Two rectangles rather than a diagonal: people walk
-          the blocks, and a straight line across them would read as a
-          chart. */}
-      <div
-        style={{
-          position: 'absolute',
-          left: 790,
-          top: 316,
-          width: 124,
-          height: 4,
-          backgroundColor: 'rgba(232,160,32,0.16)',
-          display: 'flex',
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          left: 788,
-          top: 316,
-          width: 4,
-          height: 74,
-          backgroundColor: 'rgba(232,160,32,0.16)',
-          display: 'flex',
-        }}
-      />
-
-      {PINS.map(p => (
+      {AVENUES.map(a => (
         <div
-          key={`p${p.x}`}
+          key={`a${a.x}`}
           style={{
             position: 'absolute',
-            left: p.x - p.r,
-            top: p.y - p.r,
-            width: p.r * 2,
-            height: p.r * 2,
-            borderRadius: p.r,
-            backgroundColor: 'rgba(232,160,32,0.74)',
-            border: `3px solid ${NAVY}`,
+            left: a.x,
+            top: vh(a.y),
+            width: 5,
+            height: vh(a.h),
+            backgroundColor: ROAD,
+            display: 'flex',
+          }}
+        />
+      ))}
+      {STREETS.map(st => (
+        <div
+          key={`s${st.y}`}
+          style={{
+            position: 'absolute',
+            left: Math.round(W * st.x),
+            top: st.y,
+            width: Math.round(W * st.w),
+            height: 5,
+            backgroundColor: ROAD,
             display: 'flex',
           }}
         />
       ))}
 
-      {/* The plan's own pin, with the ring a live one carries. */}
+      {/* The fade sits HERE, under the pins and over everything else:
+          the streets are texture and go back, the places are the
+          point and stay crisp. */}
       <div
         style={{
           position: 'absolute',
-          left: HERE.x - HERE.r * 2.6,
-          top: HERE.y - HERE.r * 2.6,
-          width: HERE.r * 5.2,
-          height: HERE.r * 5.2,
-          borderRadius: HERE.r * 2.6,
-          backgroundColor: 'rgba(232,160,32,0.10)',
-          display: 'flex',
-        }}
-      />
-      <div
-        style={{
-          position: 'absolute',
-          left: HERE.x - HERE.r,
-          top: HERE.y - HERE.r,
-          width: HERE.r * 2,
-          height: HERE.r * 2,
-          borderRadius: HERE.r,
-          backgroundColor: GOLD,
-          border: `4px solid ${NAVY}`,
+          left: 0,
+          top: 0,
+          width: W,
+          height,
+          backgroundColor: 'rgba(246,244,239,0.30)',
           display: 'flex',
         }}
       />
 
-      {/* Two somebody-said-something bubbles. Empty, like the pins:
-          a preview that quoted real chat would be a leak, and the
-          blank shape is the more honest tease anyway. */}
-      {BUBBLES.map(b => (
+      {PLACES.map(p => (
         <div
-          key={`m${b.x}`}
-          style={{ position: 'absolute', left: b.x, top: b.y, display: 'flex' }}
+          key={`p${p.x}`}
+          style={{ position: 'absolute', left: 0, top: 0, display: 'flex' }}
         >
           <div
             style={{
-              width: b.w,
-              height: b.h,
-              borderRadius: b.h / 2,
-              backgroundColor: `${INK}${b.ink})`,
-              display: 'flex',
-            }}
-          />
-          {/* The two descending dots that make a rounded rectangle
-              read as something somebody said. */}
-          <div
-            style={{
               position: 'absolute',
-              left: 6,
-              top: b.h - 4,
-              width: 10,
-              height: 10,
-              borderRadius: 5,
-              backgroundColor: `${INK}${b.ink})`,
+              left: p.x - p.r * 2,
+              top: p.y - p.r * 2,
+              width: p.r * 4,
+              height: p.r * 4,
+              borderRadius: p.r * 2,
+              backgroundColor: p.halo,
               display: 'flex',
             }}
           />
           <div
             style={{
               position: 'absolute',
-              left: 1,
-              top: b.h + 5,
-              width: 6,
-              height: 6,
-              borderRadius: 3,
-              backgroundColor: `${INK}${b.ink})`,
+              left: p.x - p.r,
+              top: p.y - p.r,
+              width: p.r * 2,
+              height: p.r * 2,
+              borderRadius: p.r,
+              backgroundColor: p.c,
               display: 'flex',
             }}
           />
         </div>
       ))}
+
+      <div
+        style={{
+          position: 'absolute',
+          left: HERE.x - 44,
+          top: HERE.y - 44,
+          width: 88,
+          height: 88,
+          borderRadius: 44,
+          backgroundColor: 'rgba(46,125,246,0.18)',
+          display: 'flex',
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          left: HERE.x - 14,
+          top: HERE.y - 14,
+          width: 28,
+          height: 28,
+          borderRadius: 14,
+          backgroundColor: HERE.c,
+          border: '5px solid #FFFFFF',
+          display: 'flex',
+        }}
+      />
     </div>
   );
 }

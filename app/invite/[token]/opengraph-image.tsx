@@ -10,6 +10,7 @@ import { ImageResponse } from 'next/og';
 import { getPlanSummary } from './invite-data';
 import { SIZE, inviteCard } from './invite-card';
 import { ogFonts } from '@/app/og-fonts';
+import { jortsMark } from '@/app/og-mark';
 
 /** NOT edge, deliberately — see app/og-fonts.ts for why. */
 export const runtime = 'nodejs';
@@ -30,7 +31,7 @@ export default async function Image({
   } catch {
     plan = null;
   }
-  return new ImageResponse(inviteCard(plan), {
+  return new ImageResponse(inviteCard(plan, await jortsMark()), {
     ...size,
     fonts: await ogFonts(),
   });

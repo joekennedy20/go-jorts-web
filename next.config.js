@@ -20,7 +20,10 @@ const nextConfig = {
     // every render would throw ENOENT. One entry per route: tracing
     // is keyed on the route, not the file that does the reading.
     outputFileTracingIncludes: {
-      '/invite/[token]/opengraph-image': ['./app/fonts/*.ttf'],
+      '/invite/[token]/opengraph-image': [
+        './app/fonts/*.ttf',
+        './app/jorts-mark.png',
+      ],
       '/out/[token]/opengraph-image': ['./app/fonts/*.ttf'],
     },
   },
