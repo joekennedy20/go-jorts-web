@@ -24,6 +24,7 @@ import { attendanceText, formatDay } from './invite-data';
 // now — see app/og-fonts.ts, which also explains why they have to be
 // loaded at all.
 import { BODY, DISPLAY, GOLD, NAVY } from '@/app/og-fonts';
+import { ogMap } from '@/app/og-map';
 
 export const SIZE = { width: 1200, height: 630 };
 
@@ -33,18 +34,13 @@ function dayWord(day: string): string {
   return formatDay(day).split(',')[0] || formatDay(day);
 }
 
-export function inviteCard(
-  plan: PlanSummary | null,
-  /** The venue's map, already fetched and inlined — see
-   *  map-backdrop.ts. Null whenever anything at all went wrong, and
-   *  the card below is the same card it has always been. */
-  map: string | null = null,
-) {
+export function inviteCard(plan: PlanSummary | null) {
   if (!plan) {
     // A token the API wouldn't resolve. Still a card, still obviously
     // Jorts — a broken preview in a group text is worse than a plain one.
     return (
       <div style={{ ...shell, justifyContent: 'center' }}>
+        {ogMap()}
         <div style={wordmark}>jorts</div>
         <div style={{ ...title, fontSize: 76 }}>{'You\u2019re invited'}</div>
         <div style={{ display: 'flex', marginTop: 40 }}>
@@ -66,18 +62,7 @@ export function inviteCard(
 
   return (
     <div style={shell}>
-      {map ? (
-        <img
-          src={map}
-          width={SIZE.width}
-          height={SIZE.height}
-          style={{ position: 'absolute', top: 0, left: 0 }}
-        />
-      ) : null}
-      {/* The plan has to stay readable at thumbnail size in a thread,
-          so the map is texture under a scrim rather than a picture
-          with words on it. */}
-      {map ? <div style={scrim} /> : null}
+      {ogMap()}
       <div style={wordmark}>jorts</div>
 
       <div
@@ -126,16 +111,6 @@ const shell: React.CSSProperties = {
   position: 'relative',
 };
 
-/** Navy over the map, heavy enough that white at 104px and gold at
- *  30px both keep the contrast they have on the plain card. */
-const scrim: React.CSSProperties = {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  width: SIZE.width,
-  height: SIZE.height,
-  backgroundColor: 'rgba(13,31,45,0.80)',
-};
 
 const whereRow: React.CSSProperties = {
   display: 'flex',

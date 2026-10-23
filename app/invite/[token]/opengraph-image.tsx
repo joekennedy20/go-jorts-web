@@ -9,7 +9,6 @@ import { ImageResponse } from 'next/og';
 
 import { getPlanSummary } from './invite-data';
 import { SIZE, inviteCard } from './invite-card';
-import { mapBackdrop } from './map-backdrop';
 import { ogFonts } from '@/app/og-fonts';
 
 /** NOT edge, deliberately — see app/og-fonts.ts for why. */
@@ -31,10 +30,7 @@ export default async function Image({
   } catch {
     plan = null;
   }
-  // Null unless the plan has a point AND Google answered in time —
-  // see map-backdrop.ts. The card is the same card without it.
-  const map = await mapBackdrop(plan?.latitude, plan?.longitude);
-  return new ImageResponse(inviteCard(plan, map), {
+  return new ImageResponse(inviteCard(plan), {
     ...size,
     fonts: await ogFonts(),
   });

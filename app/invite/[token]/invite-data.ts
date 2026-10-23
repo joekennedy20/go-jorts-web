@@ -32,11 +32,6 @@ export interface PlanSummary {
   day: string;
   time: string | null;
   location: string | null;
-  /** The venue's point, for the link preview's map. Absent whenever
-   *  the plan has no usable one — a free-typed venue whose geocode
-   *  never landed is the common case, so the card must not need it. */
-  latitude?: number;
-  longitude?: number;
   confirmed_names: string[];
   // Live Plan (backend PR #125) — the group can change time/place from
   // this page. Optional so the page renders against an older API.
