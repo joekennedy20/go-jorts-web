@@ -20,15 +20,11 @@
 import type { PlanSummary } from './invite-data';
 import { attendanceText, formatDay } from './invite-data';
 
-/** Satori has no system fonts: without these loaded every `fontWeight`
- *  is silently ignored and the whole card renders at one weight — which
- *  is exactly how the first proof of this came out. The two faces ship
- *  with the invite page already. */
-export const DISPLAY = 'Anton';
-export const BODY = 'Poppins';
+// The faces and the two colours are shared with the night page's card
+// now — see app/og-fonts.ts, which also explains why they have to be
+// loaded at all.
+import { BODY, DISPLAY, GOLD, NAVY } from '@/app/og-fonts';
 
-export const NAVY = '#0D1F2D';
-export const GOLD = '#E8A020';
 export const SIZE = { width: 1200, height: 630 };
 
 /** "Thursday, October 22" → "Thursday" once a time sits beside it.
@@ -37,7 +33,13 @@ function dayWord(day: string): string {
   return formatDay(day).split(',')[0] || formatDay(day);
 }
 
-export function inviteCard(plan: PlanSummary | null) {
+export function inviteCard(
+  plan: PlanSummary | null,
+  /** The venue's map, already fetched and inlined — see
+   *  map-backdrop.ts. Null whenever anything at all went wrong, and
+   *  the card below is the same card it has always been. */
+  map: string | null = null,
+) {
   if (!plan) {
     // A token the API wouldn't resolve. Still a card, still obviously
     // Jorts — a broken preview in a group text is worse than a plain one.
@@ -64,6 +66,18 @@ export function inviteCard(plan: PlanSummary | null) {
 
   return (
     <div style={shell}>
+      {map ? (
+        <img
+          src={map}
+          width={SIZE.width}
+          height={SIZE.height}
+          style={{ position: 'absolute', top: 0, left: 0 }}
+        />
+      ) : null}
+      {/* The plan has to stay readable at thumbnail size in a thread,
+          so the map is texture under a scrim rather than a picture
+          with words on it. */}
+      {map ? <div style={scrim} /> : null}
       <div style={wordmark}>jorts</div>
 
       <div
@@ -79,7 +93,15 @@ export function inviteCard(plan: PlanSummary | null) {
 
       <div style={when_}>{when}</div>
 
-      {showPlace ? <div style={where}>{showPlace}</div> : null}
+      {showPlace ? (
+        <div style={whereRow}>
+          {/* The pin belongs on the line that names the place. A
+              marker dropped in the middle of the card lands on top of
+              the headline and reads as a mistake. */}
+          <div style={pin} />
+          <div style={where}>{showPlace}</div>
+        </div>
+      ) : null}
 
       <div style={{ display: 'flex', marginTop: 'auto' }}>
         <div style={pill}>{who ?? 'tap to say you\u2019re in'}</div>
@@ -98,6 +120,36 @@ const shell: React.CSSProperties = {
   alignItems: 'flex-start',
   backgroundColor: NAVY,
   padding: '64px 72px',
+  // The map and its scrim are absolutely positioned children; later
+  // siblings paint over earlier ones, which is the whole of the
+  // stacking here — Satori has no z-index.
+  position: 'relative',
+};
+
+/** Navy over the map, heavy enough that white at 104px and gold at
+ *  30px both keep the contrast they have on the plain card. */
+const scrim: React.CSSProperties = {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  width: SIZE.width,
+  height: SIZE.height,
+  backgroundColor: 'rgba(13,31,45,0.80)',
+};
+
+const whereRow: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  marginTop: 10,
+};
+
+const pin: React.CSSProperties = {
+  display: 'flex',
+  width: 16,
+  height: 16,
+  borderRadius: 8,
+  backgroundColor: GOLD,
+  marginRight: 14,
 };
 
 const wordmark: React.CSSProperties = {
@@ -129,9 +181,10 @@ const when_: React.CSSProperties = {
 const where: React.CSSProperties = {
   display: 'flex',
   fontFamily: BODY,
-  marginTop: 10,
   fontSize: 38,
-  color: 'rgba(255,255,255,0.72)',
+  // Lifted from .72: over map texture the venue was the first line
+  // to go soft, and it is the line the map exists to support.
+  color: 'rgba(255,255,255,0.84)',
 };
 
 const pill: React.CSSProperties = {

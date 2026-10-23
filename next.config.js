@@ -13,13 +13,15 @@
 // continue to work via the literal route on disk.
 const nextConfig = {
   experimental: {
-    // The invite card's OG image reads its two .ttf files off disk at
-    // request time (see app/invite/[token]/opengraph-image.tsx for why
-    // it isn't the documented `import.meta.url` fetch). Nothing
-    // IMPORTS them, so the tracer would leave them out of the
-    // deployed function and every render would throw ENOENT.
+    // Both link-preview cards read their two .ttf files off disk at
+    // request time (see app/og-fonts.ts for why it isn't the
+    // documented `import.meta.url` fetch). Nothing IMPORTS a .ttf, so
+    // the tracer would leave them out of the deployed functions and
+    // every render would throw ENOENT. One entry per route: tracing
+    // is keyed on the route, not the file that does the reading.
     outputFileTracingIncludes: {
-      '/invite/[token]/opengraph-image': ['./app/invite/[token]/fonts/*.ttf'],
+      '/invite/[token]/opengraph-image': ['./app/fonts/*.ttf'],
+      '/out/[token]/opengraph-image': ['./app/fonts/*.ttf'],
     },
   },
   async rewrites() {
