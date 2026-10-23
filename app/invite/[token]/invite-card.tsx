@@ -31,6 +31,10 @@ import { BODY, DISPLAY } from '@/app/og-fonts';
 export const SIZE = { width: 1200, height: 630 };
 /** The date block. Wide enough for a two-digit day at 176px. */
 const BLOCK_W = 330;
+/** The host's own card is 9:16, so at full bleed down the left edge
+ *  it is this wide. It takes the date block's place rather than
+ *  sitting beside it — the poster already says when. */
+const POSTER_W = Math.round((SIZE.height * 9) / 16);
 
 const NAVY = '#0D1F2D';
 const INK = '#16212C';
@@ -63,7 +67,14 @@ function datePieces(plan: PlanSummary | null) {
   };
 }
 
-export function inviteCard(plan: PlanSummary | null, mark: string | null) {
+export function inviteCard(
+  plan: PlanSummary | null,
+  mark: string | null,
+  /** The host's designed card, already fetched and inlined — see
+   *  poster.ts. Null whenever they didn't make one or anything at
+   *  all went wrong, and the date block takes the space back. */
+  poster: string | null = null,
+) {
   const name = plan?.name?.trim() || 'You’re invited';
   const { weekday, dayNum, month } = datePieces(plan);
   const time = plan?.time?.trim() || '';
@@ -74,6 +85,46 @@ export function inviteCard(plan: PlanSummary | null, mark: string | null) {
   const place = plan?.location?.trim();
   const showPlace =
     place && place.toLowerCase() !== name.toLowerCase() ? place : null;
+
+  if (poster) {
+    // They designed a card. It IS the invite — the words beside it
+    // are the part a thumbnail can still read when the artwork
+    // cannot.
+    return (
+      <div style={shell}>
+        <img
+          src={poster}
+          width={POSTER_W}
+          height={SIZE.height}
+          style={{ width: POSTER_W, height: SIZE.height }}
+        />
+        <div style={{ ...body, width: SIZE.width - POSTER_W }}>
+          <div
+            style={{
+              ...title,
+              fontSize: name.length > 32 ? 58 : name.length > 22 ? 70 : 88,
+            }}
+          >
+            {name}
+          </div>
+          <div style={timeText}>
+            {[weekday, dayNum && month ? `${month} ${dayNum}` : '', time]
+              .filter(Boolean)
+              .join('  ·  ')}
+          </div>
+          {showPlace ? (
+            <div style={whereRow}>
+              <div style={pin} />
+              <div style={where}>{showPlace}</div>
+            </div>
+          ) : null}
+        </div>
+        {mark ? (
+          <img src={mark} width={104} height={95} style={signoffSmall} />
+        ) : null}
+      </div>
+    );
+  }
 
   return (
     <div style={shell}>
@@ -244,6 +295,14 @@ const stack: React.CSSProperties = {
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
+};
+
+const signoffSmall: React.CSSProperties = {
+  position: 'absolute',
+  right: 46,
+  bottom: 40,
+  width: 104,
+  height: 95,
 };
 
 const signoff: React.CSSProperties = {
