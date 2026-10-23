@@ -11,6 +11,7 @@ import { getPlanSummary } from './invite-data';
 import { SIZE, inviteCard } from './invite-card';
 import { ogFonts } from '@/app/og-fonts';
 import { jortsMark } from '@/app/og-mark';
+import { posterImage } from './poster';
 
 /** NOT edge, deliberately — see app/og-fonts.ts for why. */
 export const runtime = 'nodejs';
@@ -31,7 +32,11 @@ export default async function Image({
   } catch {
     plan = null;
   }
-  return new ImageResponse(inviteCard(plan, await jortsMark()), {
+  const [mark, poster] = await Promise.all([
+    jortsMark(),
+    posterImage(plan?.card),
+  ]);
+  return new ImageResponse(inviteCard(plan, mark, poster), {
     ...size,
     fonts: await ogFonts(),
   });
