@@ -31,10 +31,15 @@ import { BODY, DISPLAY } from '@/app/og-fonts';
 export const SIZE = { width: 1200, height: 630 };
 /** The date block. Wide enough for a two-digit day at 176px. */
 const BLOCK_W = 330;
-/** The host's own card is 9:16, so at full bleed down the left edge
- *  it is this wide. It takes the date block's place rather than
- *  sitting beside it — the poster already says when. */
+/** The host's card is 9:16 and the frame is landscape, so the card
+ *  at full height is this wide — about a third of it. */
 const POSTER_W = Math.round((SIZE.height * 9) / 16);
+/** The same card, scaled until it COVERS the frame. 1200 wide makes
+ *  it 2133 tall, so it is lifted by half the overflow to keep the
+ *  middle of the artwork in the middle of the frame. */
+const COVER_W = SIZE.width;
+const COVER_H = Math.round((COVER_W * 16) / 9);
+const COVER_TOP = Math.round((SIZE.height - COVER_H) / 2);
 
 const NAVY = '#0D1F2D';
 const INK = '#16212C';
@@ -87,40 +92,47 @@ export function inviteCard(
     place && place.toLowerCase() !== name.toLowerCase() ? place : null;
 
   if (poster) {
-    // They designed a card. It IS the invite — the words beside it
-    // are the part a thumbnail can still read when the artwork
-    // cannot.
+    // The card the host designed, filling the frame rather than
+    // sitting in a panel inside it (Joe, 2026-10-26: "we can keep
+    // landscape look so long as the picture can fill the frame").
+    //
+    // It is 9:16 and the frame is 1200x630, so nothing can do both
+    // honestly: cover it and you keep a third of their artwork,
+    // fit it and two thirds of the picture is somebody else's
+    // furniture. So the artwork fills the frame TWICE — once blown
+    // up past the edges and pushed back under a scrim, once sharp
+    // and whole in the middle. The frame is full of their card and
+    // all of their card is in it.
     return (
       <div style={shell}>
         <img
           src={poster}
+          width={COVER_W}
+          height={COVER_H}
+          style={{
+            position: 'absolute',
+            left: 0,
+            top: COVER_TOP,
+            width: COVER_W,
+            height: COVER_H,
+            filter: 'blur(42px)',
+          }}
+        />
+        <div style={wash} />
+        <img
+          src={poster}
           width={POSTER_W}
           height={SIZE.height}
-          style={{ width: POSTER_W, height: SIZE.height }}
+          style={{
+            position: 'absolute',
+            left: Math.round((SIZE.width - POSTER_W) / 2),
+            top: 0,
+            width: POSTER_W,
+            height: SIZE.height,
+          }}
         />
-        <div style={{ ...body, width: SIZE.width - POSTER_W }}>
-          <div
-            style={{
-              ...title,
-              fontSize: name.length > 32 ? 58 : name.length > 22 ? 70 : 88,
-            }}
-          >
-            {name}
-          </div>
-          <div style={timeText}>
-            {[weekday, dayNum && month ? `${month} ${dayNum}` : '', time]
-              .filter(Boolean)
-              .join('  ·  ')}
-          </div>
-          {showPlace ? (
-            <div style={whereRow}>
-              <div style={pin} />
-              <div style={where}>{showPlace}</div>
-            </div>
-          ) : null}
-        </div>
         {mark ? (
-          <img src={mark} width={104} height={95} style={signoffSmall} />
+          <img src={mark} width={92} height={84} style={signoffSmall} />
         ) : null}
       </div>
     );
@@ -297,12 +309,25 @@ const stack: React.CSSProperties = {
   alignItems: 'center',
 };
 
+/** Over the blurred copy. Light enough that a bright card tints its
+ *  own surround, heavy enough that the sharp one in the middle is
+ *  obviously the picture and the rest is obviously its edge. */
+const wash: React.CSSProperties = {
+  position: 'absolute',
+  left: 0,
+  top: 0,
+  width: SIZE.width,
+  height: SIZE.height,
+  backgroundColor: 'rgba(13,31,45,0.45)',
+  display: 'flex',
+};
+
 const signoffSmall: React.CSSProperties = {
   position: 'absolute',
-  right: 46,
-  bottom: 40,
-  width: 104,
-  height: 95,
+  right: 30,
+  bottom: 24,
+  width: 92,
+  height: 84,
 };
 
 const signoff: React.CSSProperties = {
