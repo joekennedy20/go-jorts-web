@@ -4,6 +4,10 @@
  *
  * The metadata beside this (page.tsx) carries the same facts as words;
  * this is the half that gets looked at.
+ *
+ * 1080x1920, which is the shape the app's cards are. See
+ * invite-card.tsx for why the frame moved to meet them rather than
+ * the other way round.
  */
 import { ImageResponse } from 'next/og';
 
@@ -32,11 +36,25 @@ export default async function Image({
   } catch {
     plan = null;
   }
-  const [mark, poster] = await Promise.all([
-    jortsMark(),
-    posterImage(plan?.card),
-  ]);
-  return new ImageResponse(inviteCard(plan, mark, poster), {
+  // A card the host designed is served AS ITSELF — the app captures
+  // at exactly 1080x1920 and the frame is 1080x1920, so there is
+  // nothing to fit, letterbox, crop or fill around. That is the whole
+  // reason the preview is tall.
+  const poster = await posterImage(plan?.card);
+  if (poster) {
+    return new ImageResponse(
+      (
+        <img
+          src={poster}
+          width={size.width}
+          height={size.height}
+          style={{ width: size.width, height: size.height }}
+        />
+      ),
+      size,
+    );
+  }
+  return new ImageResponse(inviteCard(plan, await jortsMark()), {
     ...size,
     fonts: await ogFonts(),
   });
