@@ -57,22 +57,50 @@ export async function generateMetadata({
   const description =
     [hosted, detail, attendance].filter(Boolean).join(' — ') || 'Tap to RSVP.';
 
+  // When the host designed a card, the card already says what this
+  // is, when it is and where — they wrote it on there. Repeating it
+  // underneath in a grey strip is the app talking over them, so the
+  // preview is the picture and nothing else (Joe, 2026-10-26: "since
+  // all the venue/time lives within the actual invite, can the
+  // invite be the only thing on the text that is sent?").
+  //
+  // The document still has its title, for the tab and for anything
+  // reading the page rather than previewing the link. It is only
+  // what the LINK says about itself that goes quiet.
+  //
+  // One thing this cannot do: iMessage prints the domain under every
+  // link preview and nothing in the page can stop it.
+  const designed = !!plan?.card;
+
   return {
-    title,
-    description,
-    openGraph: {
-      title,
-      description,
-      type: 'website',
-    },
-    twitter: {
-      // Not 'summary' — that is the small square thumbnail, which is
-      // the grey-row problem the card exists to solve. The card is
-      // 1200x630; say so, or clients crop it into a chip.
-      card: 'summary_large_image',
-      title,
-      description,
-    },
+    // A designed card carries its own name, date and place. The
+    // ONLY way Next will stop repeating them in the link preview is
+    // to withhold them here: `openGraph.title` inherits from this
+    // whenever it is falsy, and null/''/{absolute:''} on the
+    // openGraph object are all treated as "not provided".
+    title: designed ? {absolute: ''} : title,
+    description: designed ? '' : description,
+    openGraph: designed
+      ? // Empty, not omitted. Leaving them out makes Next fall back
+        // to the page-level `title`/`description` — which is how the
+        // first attempt at this changed nothing — and the types
+        // refuse `null`. An empty string is the furthest a page can
+        // go towards saying "I have no title".
+        {type: 'website', title: {absolute: ''}, description: ''}
+      : {
+          title,
+          description,
+          type: 'website',
+        },
+    twitter: designed
+      ? {card: 'summary_large_image', title: {absolute: ''}, description: ''}
+      : {
+          // Not 'summary' — that is the small square thumbnail, which
+          // is the grey-row problem the card exists to solve.
+          card: 'summary_large_image',
+          title,
+          description,
+        },
     other: {
       'apple-itunes-app': `app-id=${APP_STORE_ID}, app-argument=${params.token}`,
     },
