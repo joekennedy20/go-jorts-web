@@ -1,19 +1,19 @@
 /**
  * The card a Jorts invite becomes when it lands in a group text.
  *
- * The page's metadata has always said the right things — "Kemper's —
- * Thursday", "hosted by Joe — 8:30 PM · Kemper's" — and with no image
- * beside them iMessage renders the lot as a grey row that looks like
- * every spam link anyone has ever been sent. The plan was already in
- * the thread; nobody could see it.
+ * TALL, like the cards the app makes. The preview used to be
+ * 1200x630 because that is what an OG image conventionally is, and
+ * everything after that was a consequence of the mismatch: a 9:16
+ * card designed in the app had to be letterboxed into a landscape
+ * frame, put in a panel with the plan's words beside it, or blown
+ * up and blurred to fill the space around itself. All three are
+ * ways of apologising for the shape (Joe, 2026-10-26: "can we make
+ * all be 9:16?").
  *
- * A pass: the date in a navy block on the left, the plan on paper
- * beside it. Picked out of three directions (Joe, 2026-10-23) and
- * it is the right one for the place this lives. A link preview is
- * read at a glance, half-scrolled, in a thread moving past it — and
- * the day number is the one thing on this card that survives being
- * shrunk into a message bubble. The name tells you what; the 22
- * tells you whether you care.
+ * So the frame is the card's shape and nothing has to be fitted
+ * into anything. A designed card is served as itself, pixel for
+ * pixel — the app captures at exactly 1080x1920. A plan with no
+ * design gets this: the same pass, stood up.
  *
  * Nothing here says who is in or out. A preview is a frozen PNG and
  * attendance changes all evening, so a card saying "8 going" is a
@@ -28,13 +28,12 @@ import type { PlanSummary } from './invite-data';
 import { formatDay } from './invite-data';
 import { BODY, DISPLAY } from '@/app/og-fonts';
 
-export const SIZE = { width: 1200, height: 630 };
-/** The date block. Wide enough for a two-digit day at 176px. */
-const BLOCK_W = 330;
-/** The host's own card is 9:16, so at full bleed down the left edge
- *  it is this wide. It takes the date block's place rather than
- *  sitting beside it — the poster already says when. */
-const POSTER_W = Math.round((SIZE.height * 9) / 16);
+export const SIZE = { width: 1080, height: 1920 };
+/** The date, across the top. Just over half, because 9:16 is a lot
+ *  of card and three lines of plan will not fill the rest of it —
+ *  at 700 the paper had a dead band above the name wider than the
+ *  name itself. */
+const BLOCK_H = 980;
 
 const NAVY = '#0D1F2D';
 const INK = '#16212C';
@@ -60,21 +59,10 @@ function datePieces(plan: PlanSummary | null) {
   const [month] = (rest || '').split(' ');
   const iso = /^(\d{4})-(\d{2})-(\d{2})$/.exec(plan.day);
   const dayNum = iso ? String(Number(iso[3])) : (rest || '').split(' ')[1] || '';
-  return {
-    weekday: rest ? weekday : '',
-    dayNum,
-    month: rest ? month : '',
-  };
+  return { weekday: rest ? weekday : '', dayNum, month: rest ? month : '' };
 }
 
-export function inviteCard(
-  plan: PlanSummary | null,
-  mark: string | null,
-  /** The host's designed card, already fetched and inlined — see
-   *  poster.ts. Null whenever they didn't make one or anything at
-   *  all went wrong, and the date block takes the space back. */
-  poster: string | null = null,
-) {
+export function inviteCard(plan: PlanSummary | null, mark: string | null) {
   const name = plan?.name?.trim() || 'You’re invited';
   const { weekday, dayNum, month } = datePieces(plan);
   const time = plan?.time?.trim() || '';
@@ -86,74 +74,29 @@ export function inviteCard(
   const showPlace =
     place && place.toLowerCase() !== name.toLowerCase() ? place : null;
 
-  if (poster) {
-    // They designed a card. It IS the invite — the words beside it
-    // are the part a thumbnail can still read when the artwork
-    // cannot.
-    return (
-      <div style={shell}>
-        <img
-          src={poster}
-          width={POSTER_W}
-          height={SIZE.height}
-          style={{ width: POSTER_W, height: SIZE.height }}
-        />
-        <div style={{ ...body, width: SIZE.width - POSTER_W }}>
-          <div
-            style={{
-              ...title,
-              fontSize: name.length > 32 ? 58 : name.length > 22 ? 70 : 88,
-            }}
-          >
-            {name}
-          </div>
-          <div style={timeText}>
-            {[weekday, dayNum && month ? `${month} ${dayNum}` : '', time]
-              .filter(Boolean)
-              .join('  ·  ')}
-          </div>
-          {showPlace ? (
-            <div style={whereRow}>
-              <div style={pin} />
-              <div style={where}>{showPlace}</div>
-            </div>
-          ) : null}
-        </div>
-        {mark ? (
-          <img src={mark} width={104} height={95} style={signoffSmall} />
-        ) : null}
-      </div>
-    );
-  }
-
   return (
     <div style={shell}>
       <div style={block}>
         {dayNum ? (
-          // A real box, not a fragment: Satori laid the fragment's
-          // three children out in a ROW and overflowed the block.
+          // A real box, not a fragment: Satori lays a fragment's
+          // children out in a ROW whatever the parent says.
           <div style={stack}>
             <div style={weekdayText}>{weekday.slice(0, 3).toUpperCase()}</div>
             <div style={dayText}>{dayNum}</div>
             <div style={monthText}>{month}</div>
           </div>
-        ) : (
-          // No date to put here — an unresolvable token, or a plan
-          // saved without one. The mark fills the block rather than
-          // leaving a navy hole with a dash in it.
-          mark ? (
-            // On white. The mark is navy and the block is navy, so
-            // dropped straight in it all but disappeared.
-            <div style={markBadge}>
-              <img
-                src={mark}
-                width={146}
-                height={134}
-                style={{ width: 146, height: 134 }}
-              />
-            </div>
-          ) : null
-        )}
+        ) : mark ? (
+          // No date — an unresolvable token, or a plan saved without
+          // one. On white, because the mark is navy and so is this.
+          <div style={markBadge}>
+            <img
+              src={mark}
+              width={230}
+              height={211}
+              style={{ width: 230, height: 211 }}
+            />
+          </div>
+        ) : null}
       </div>
 
       <div style={body}>
@@ -162,7 +105,7 @@ export function inviteCard(
             ...title,
             // User-typed, so it has to survive "dinner" and "Auburn
             // homecoming tailgate thing" in the same box.
-            fontSize: name.length > 32 ? 62 : name.length > 22 ? 76 : 96,
+            fontSize: name.length > 30 ? 118 : name.length > 18 ? 146 : 184,
           }}
         >
           {name}
@@ -184,7 +127,7 @@ export function inviteCard(
 
       {/* The sign-off. Only when the block isn't already carrying it. */}
       {mark && dayNum ? (
-        <img src={mark} width={118} height={108} style={signoff} />
+        <img src={mark} width={150} height={138} style={signoff} />
       ) : null}
     </div>
   );
@@ -196,99 +139,19 @@ const shell: React.CSSProperties = {
   width: '100%',
   height: '100%',
   display: 'flex',
+  flexDirection: 'column',
   backgroundColor: PAPER,
   position: 'relative',
 };
 
 const block: React.CSSProperties = {
-  width: BLOCK_W,
-  height: SIZE.height,
+  width: SIZE.width,
+  height: BLOCK_H,
   backgroundColor: NAVY,
   display: 'flex',
   flexDirection: 'column',
   alignItems: 'center',
   justifyContent: 'center',
-};
-
-const weekdayText: React.CSSProperties = {
-  display: 'flex',
-  fontFamily: BODY,
-  fontSize: 34,
-  letterSpacing: 5,
-  color: GOLD,
-};
-
-const dayText: React.CSSProperties = {
-  display: 'flex',
-  fontFamily: DISPLAY,
-  fontSize: 176,
-  color: '#FFFFFF',
-  lineHeight: 1,
-  marginTop: 6,
-};
-
-const monthText: React.CSSProperties = {
-  display: 'flex',
-  fontFamily: BODY,
-  fontSize: 34,
-  color: 'rgba(255,255,255,0.74)',
-  marginTop: 8,
-};
-
-const body: React.CSSProperties = {
-  width: SIZE.width - BLOCK_W,
-  display: 'flex',
-  flexDirection: 'column',
-  justifyContent: 'center',
-  padding: '0 64px',
-};
-
-const title: React.CSSProperties = {
-  display: 'flex',
-  fontFamily: DISPLAY,
-  color: INK,
-  lineHeight: 1.04,
-  letterSpacing: -1.5,
-};
-
-const timeText: React.CSSProperties = {
-  display: 'flex',
-  fontFamily: BODY,
-  fontSize: 44,
-  color: INK_SOFT,
-  marginTop: 20,
-};
-
-const whereRow: React.CSSProperties = {
-  display: 'flex',
-  alignItems: 'center',
-  marginTop: 12,
-};
-
-const pin: React.CSSProperties = {
-  display: 'flex',
-  width: 15,
-  height: 15,
-  borderRadius: 8,
-  backgroundColor: GOLD,
-  marginRight: 13,
-};
-
-const where: React.CSSProperties = {
-  display: 'flex',
-  fontFamily: BODY,
-  fontSize: 38,
-  color: INK_SOFT,
-};
-
-const markBadge: React.CSSProperties = {
-  width: 196,
-  height: 184,
-  borderRadius: 40,
-  backgroundColor: '#FFFFFF',
-  alignItems: 'center',
-  justifyContent: 'center',
-  display: 'flex',
 };
 
 const stack: React.CSSProperties = {
@@ -297,20 +160,92 @@ const stack: React.CSSProperties = {
   alignItems: 'center',
 };
 
-const signoffSmall: React.CSSProperties = {
-  position: 'absolute',
-  right: 46,
-  bottom: 40,
-  width: 104,
-  height: 95,
+const markBadge: React.CSSProperties = {
+  width: 300,
+  height: 282,
+  borderRadius: 60,
+  backgroundColor: '#FFFFFF',
+  alignItems: 'center',
+  justifyContent: 'center',
+  display: 'flex',
+};
+
+const weekdayText: React.CSSProperties = {
+  display: 'flex',
+  fontFamily: BODY,
+  fontSize: 54,
+  letterSpacing: 8,
+  color: GOLD,
+};
+
+const dayText: React.CSSProperties = {
+  display: 'flex',
+  fontFamily: DISPLAY,
+  fontSize: 400,
+  color: '#FFFFFF',
+  lineHeight: 1,
+  marginTop: 10,
+};
+
+const monthText: React.CSSProperties = {
+  display: 'flex',
+  fontFamily: BODY,
+  fontSize: 54,
+  color: 'rgba(255,255,255,0.74)',
+  marginTop: 14,
+};
+
+const body: React.CSSProperties = {
+  width: SIZE.width,
+  height: SIZE.height - BLOCK_H,
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'center',
+  padding: '0 88px',
+};
+
+const title: React.CSSProperties = {
+  display: 'flex',
+  fontFamily: DISPLAY,
+  color: INK,
+  lineHeight: 1.03,
+  letterSpacing: -3,
+};
+
+const timeText: React.CSSProperties = {
+  display: 'flex',
+  fontFamily: BODY,
+  fontSize: 76,
+  color: INK_SOFT,
+  marginTop: 40,
+};
+
+const whereRow: React.CSSProperties = {
+  display: 'flex',
+  alignItems: 'center',
+  marginTop: 22,
+};
+
+const pin: React.CSSProperties = {
+  display: 'flex',
+  width: 24,
+  height: 24,
+  borderRadius: 12,
+  backgroundColor: GOLD,
+  marginRight: 22,
+};
+
+const where: React.CSSProperties = {
+  display: 'flex',
+  fontFamily: BODY,
+  fontSize: 64,
+  color: INK_SOFT,
 };
 
 const signoff: React.CSSProperties = {
   position: 'absolute',
-  right: 54,
-  bottom: 46,
-  // The box has to be stated here too — on the attributes alone the
-  // mark drew at its natural size and ran off the bottom corner.
-  width: 118,
-  height: 108,
+  right: 72,
+  bottom: 72,
+  width: 150,
+  height: 138,
 };
