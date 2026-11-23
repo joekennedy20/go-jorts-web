@@ -49,7 +49,9 @@ export async function generateMetadata({
 
   // Still picking: there is no night yet, so the preview asks.
   const picking = plan?.options?.status === 'open' ? plan.options : null;
-  const title = plan
+  const title = plan?.cancelled
+    ? `${plan.name} — cancelled`
+    : plan
     ? picking
       ? `${plan.name} — pick what works`
       : `${plan.name} — ${formatDay(plan.day)}`
@@ -907,6 +909,26 @@ export default async function InvitePage({
   if (resolved.type === 'group' && resolved.plan) {
     const skin = skinFor(styleOverride ?? resolved.plan.style);
     const options = resolved.plan.options;
+    if (resolved.plan.cancelled) {
+      // Called off. Nothing to answer or pick — say so plainly, where
+      // the RSVP would have been.
+      return (
+        <Scene skin={skin} photo={resolved.plan.photo} photos={resolved.plan.photos} card={resolved.plan.card} day={resolved.plan.day}>
+          <HostCard plan={{ ...resolved.plan, options: null }} skin={skin}>
+            <div className="mt-5 rounded-xl px-4 py-3.5" style={{ backgroundColor: 'var(--field)' }}>
+              <p className="text-[15px] font-bold" style={{ color: 'var(--ink)' }}>
+                This plan was cancelled
+              </p>
+              <p className="mt-1 text-[13px]" style={{ color: 'var(--sub)' }}>
+                {resolved.plan.host?.name
+                  ? `${resolved.plan.host.name} called it off.`
+                  : 'The host called it off.'}
+              </p>
+            </div>
+          </HostCard>
+        </Scene>
+      );
+    }
     if (options?.status === 'open') {
       // Still picking: the options ARE the invite. No RSVP yet — there
       // is no night to say yes to until the host locks one in.

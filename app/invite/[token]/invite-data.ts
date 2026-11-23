@@ -62,6 +62,8 @@ export interface PlanSummary {
   // Live Plan (backend PR #125) — the group can change time/place from
   // this page. Optional so the page renders against an older API.
   state?: string | null;
+  /** The host called it off (backend cancel_plan). */
+  cancelled?: boolean;
   details_locked?: boolean;
   change_log?: PlanChange[];
   // A few nights and places for the group to pick from (backend
