@@ -27,6 +27,32 @@ export interface PlanChange {
   created_at: string | null;
 }
 
+/** One night or place the host offered (backend plan_options). */
+export interface PlanOptionItem {
+  id: string;
+  /** Nights. */
+  day?: string;
+  time?: string | null;
+  label?: string;
+  /** Places. */
+  name?: string;
+  address?: string | null;
+  added_by: string | null;
+  count: number;
+  voters: { name: string | null; user_id: string | null }[];
+}
+
+export interface PlanOptions {
+  status: 'open' | 'locked';
+  allow_suggestions: boolean;
+  times: (PlanOptionItem & { day: string; label: string })[];
+  places: (PlanOptionItem & { name: string })[];
+  voter_count: number;
+  voters: string[];
+  leading_time_id: string | null;
+  leading_place_id: string | null;
+}
+
 export interface PlanSummary {
   name: string;
   day: string;
@@ -38,6 +64,9 @@ export interface PlanSummary {
   state?: string | null;
   details_locked?: boolean;
   change_log?: PlanChange[];
+  // A few nights and places for the group to pick from (backend
+  // plan-options). Open while picking; the page shows the picker.
+  options?: PlanOptions | null;
   // Host-card redesign fields (backend PR #111) — optional so the
   // page renders fine against an older API or cached payloads.
   host?: PlanHost | null;
