@@ -64,13 +64,22 @@ function datePieces(plan: PlanSummary | null) {
 
 export function inviteCard(plan: PlanSummary | null, mark: string | null) {
   const name = plan?.name?.trim() || 'You’re invited';
-  const { weekday, dayNum, month } = datePieces(plan);
-  const time = plan?.time?.trim() || '';
+  // Still picking: the day it's parked on isn't the night, so the
+  // card names the choices instead of a date.
+  const picking = plan?.options?.status === 'open' ? plan.options : null;
+  const { weekday, dayNum, month } = picking
+    ? { weekday: '', dayNum: '', month: '' }
+    : datePieces(plan);
+  const time = picking
+    ? `Pick a night: ${picking.times.map((t) => t.label.split(' ')[0]).join(' · ')}`
+    : plan?.time?.trim() || '';
 
   // Plans are very often named after the place — "Kemper's" at
   // Kemper's — and printing it twice reads as a bug in the card
   // rather than a fact about the night.
-  const place = plan?.location?.trim();
+  const place = picking
+    ? picking.places.map((p) => p.name).join(' or ')
+    : plan?.location?.trim();
   const showPlace =
     place && place.toLowerCase() !== name.toLowerCase() ? place : null;
 

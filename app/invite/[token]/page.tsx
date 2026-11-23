@@ -10,6 +10,7 @@ import {
 
 import { RSVPCard } from './rsvp-card';
 import { GroupRSVPCard } from './group-rsvp-card';
+import { PlanOptionsPicker } from './plan-options';
 import { LivePlan } from './live-plan';
 import {
   resolveToken,
@@ -46,10 +47,19 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const plan = await getPlanSummary(params.token);
 
+  // Still picking: there is no night yet, so the preview asks.
+  const picking = plan?.options?.status === 'open' ? plan.options : null;
   const title = plan
-    ? `${plan.name} — ${formatDay(plan.day)}`
+    ? picking
+      ? `${plan.name} — pick what works`
+      : `${plan.name} — ${formatDay(plan.day)}`
     : "You're invited — Jorts";
-  const detail = plan
+  const detail = picking
+    ? [
+        picking.times.map((t) => t.label).join(', '),
+        picking.places.map((p) => p.name).join(' or '),
+      ].filter(Boolean).join(' · ')
+    : plan
     ? [plan.time, plan.location].filter(Boolean).join(' · ')
     : null;
   const hosted = plan?.host?.name ? `hosted by ${plan.host.name}` : null;
@@ -576,6 +586,9 @@ function HostCard({
 }) {
   const host = plan.host ?? null;
   const guests = plan.guests ?? [];
+  // While the group is picking, the day the plan is parked on is not
+  // the night — don't print it as if it were.
+  const choosing = plan.options?.status === 'open';
   const shown = guests.slice(0, 5);
   const overflow = guests.length - shown.length;
   const invited = plan.invited_count ?? 0;
@@ -638,10 +651,10 @@ function HostCard({
           <line x1="8" y1="2" x2="8" y2="6" />
           <line x1="3" y1="10" x2="21" y2="10" />
         </svg>
-        {formatDay(plan.day)}
-        {plan.time ? ` · ${plan.time}` : ''}
+        {choosing ? 'Picking a night' : formatDay(plan.day)}
+        {!choosing && plan.time ? ` · ${plan.time}` : ''}
       </div>
-      {plan.location && (
+      {plan.location && !choosing && (
         <div className="mt-2.5 flex items-center gap-2.5 text-[14px] font-semibold" style={{ color: 'var(--ink)' }}>
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke={skin.accent} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="flex-none">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z" />
@@ -893,6 +906,18 @@ export default async function InvitePage({
   // Group invite — show name entry + RSVP + Live Plan group edits
   if (resolved.type === 'group' && resolved.plan) {
     const skin = skinFor(styleOverride ?? resolved.plan.style);
+    const options = resolved.plan.options;
+    if (options?.status === 'open') {
+      // Still picking: the options ARE the invite. No RSVP yet — there
+      // is no night to say yes to until the host locks one in.
+      return (
+        <Scene skin={skin} photo={resolved.plan.photo} photos={resolved.plan.photos} card={resolved.plan.card} day={resolved.plan.day}>
+          <HostCard plan={resolved.plan} skin={skin}>
+            <PlanOptionsPicker token={params.token} planName={resolved.plan.name} options={options} />
+          </HostCard>
+        </Scene>
+      );
+    }
     return (
       <Scene skin={skin} photo={resolved.plan.photo} photos={resolved.plan.photos} card={resolved.plan.card} day={resolved.plan.day}>
         <HostCard
