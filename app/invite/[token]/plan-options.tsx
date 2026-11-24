@@ -202,7 +202,14 @@ export function PlanOptionsPicker({
     }
     const body =
       adding === 'time'
-        ? { name: name.trim(), kind: 'time', day: newDay, time: newTime.trim() || null }
+        ? {
+            name: name.trim(),
+            kind: 'time',
+            day: newDay,
+            time: newTime.trim() || null,
+            // An outing: where, if they said.
+            place_name: newPlace.trim() || null,
+          }
         : { name: name.trim(), kind: 'place', place_name: newPlace.trim() };
     if ((adding === 'time' && !newDay) || (adding === 'place' && !newPlace.trim())) {
       setError(adding === 'time' ? 'Pick a day' : 'Name the place');
@@ -247,7 +254,9 @@ export function PlanOptionsPicker({
   };
 
   const shareLine = () => {
-    const t = options.times.filter((x) => times.has(x.id)).map((x) => x.label);
+    const t = options.times
+      .filter((x) => times.has(x.id))
+      .map((x) => (x.place?.name ? `${x.label} at ${x.place.name}` : x.label));
     const p = options.places.filter((x) => places.has(x.id)).map((x) => x.name);
     const picked = [...t, ...p].join(', ');
     return `${picked ? `I picked ${picked} for ${planName}` : `Picking a night for ${planName}`} — tap yours: https://go-jorts-web.vercel.app/invite/${token}`;
@@ -273,7 +282,7 @@ export function PlanOptionsPicker({
               key={t.id}
               on={times.has(t.id)}
               title={t.label}
-              sub={t.added_by ? `added by ${t.added_by}` : null}
+              sub={[t.place?.name, t.added_by ? `added by ${t.added_by}` : null].filter(Boolean).join(' · ') || null}
               voters={t.voters}
               onToggle={() => toggle(times, setTimes, t.id)}
             />
@@ -291,13 +300,19 @@ export function PlanOptionsPicker({
         </button>
       )}
       {adding === 'time' && (
-        <div className="mt-2 flex gap-2">
-          <input type="date" value={newDay} onChange={(e) => setNewDay(e.target.value)}
-            className="h-11 min-w-0 flex-1 rounded-xl border px-3 text-[14px] focus:outline-none" style={fieldStyle} />
-          <input type="text" placeholder="8 PM" value={newTime} maxLength={50}
-            onChange={(e) => setNewTime(e.target.value)}
-            className="h-11 w-[88px] rounded-xl border px-3 text-[14px] focus:outline-none" style={fieldStyle} />
-        </div>
+        <>
+          <div className="mt-2 flex gap-2">
+            <input type="date" value={newDay} onChange={(e) => setNewDay(e.target.value)}
+              className="h-11 min-w-0 flex-1 rounded-xl border px-3 text-[14px] focus:outline-none" style={fieldStyle} />
+            <input type="text" placeholder="8 PM" value={newTime} maxLength={50}
+              onChange={(e) => setNewTime(e.target.value)}
+              className="h-11 w-[88px] rounded-xl border px-3 text-[14px] focus:outline-none" style={fieldStyle} />
+          </div>
+          {/* Each option is a whole outing — where goes with when. */}
+          <input type="text" placeholder="Where? (optional)" value={newPlace} maxLength={200}
+            onChange={(e) => setNewPlace(e.target.value)}
+            className="mt-2 h-11 w-full rounded-xl border px-3.5 text-[14px] focus:outline-none" style={fieldStyle} />
+        </>
       )}
 
       {options.places.length > 0 && (

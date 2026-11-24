@@ -78,7 +78,10 @@ export function inviteCard(plan: PlanSummary | null, mark: string | null) {
   // Kemper's — and printing it twice reads as a bug in the card
   // rather than a fact about the night.
   const place = picking
-    ? picking.places.map((p) => p.name).join(' or ')
+    ? (picking.places.length
+        ? picking.places.map((p) => p.name)
+        : picking.times.map((t) => t.place?.name).filter(Boolean)
+      ).join(' or ')
     : plan?.location?.trim();
   const showPlace =
     place && place.toLowerCase() !== name.toLowerCase() ? place : null;

@@ -34,6 +34,8 @@ export interface PlanOptionItem {
   day?: string;
   time?: string | null;
   label?: string;
+  /** A night's own place, when each option is a whole outing. */
+  place?: { name: string; address?: string | null } | null;
   /** Places. */
   name?: string;
   address?: string | null;

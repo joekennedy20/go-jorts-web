@@ -58,7 +58,9 @@ export async function generateMetadata({
     : "You're invited — Jorts";
   const detail = picking
     ? [
-        picking.times.map((t) => t.label).join(', '),
+        picking.times
+          .map((t) => (t.place?.name ? `${t.label} at ${t.place.name}` : t.label))
+          .join(', '),
         picking.places.map((p) => p.name).join(' or '),
       ].filter(Boolean).join(' · ')
     : plan
